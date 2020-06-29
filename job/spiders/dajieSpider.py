@@ -10,7 +10,7 @@ class DajiespiderSpider(scrapy.Spider):
     def parse(self, response):
        #item = JobItem()
 
-        for post in response.xpath('//*[@id="container_jobList"]/ul/li[1]'):
+        for post in response.xpath('//*[@id="container_jobList"]/ul//li'):
          
             Jname = post.xpath('./div[2]/p[1]/a[1]//*[@id="container_jobList"]/ul/li[1]/div[2]/p[1]/a[1]').extract()
             print(Jname)
@@ -25,4 +25,3 @@ class DajiespiderSpider(scrapy.Spider):
         # return item
         # print item['Jname']
         
-    pass

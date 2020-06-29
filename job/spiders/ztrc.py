@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
-import items.JobItem
+from job.items import JobItem
 
 class ZtrcSpider(scrapy.Spider):
     name = 'ztrc'
