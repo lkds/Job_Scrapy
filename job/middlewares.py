@@ -80,14 +80,26 @@ class JobDownloaderMiddleware:
 
     # your spider code
 
-    def modifyRequest(self,request):
+    def modifyRequest(self,request,times):
         # ....
+        if (times == 0):
+            return None
         proxy = self.get_proxy().get("proxy")
-        request.meta['proxy'] = "http://%s" % proxy
-        return request
-        # 出错5次, 删除代理池中代理
-        # self.delete_proxy(proxy)
+        retry_count=3
+        while retry_count>0:
+            try:
+                html = requests.get(request.url, proxies={"http": "http://{}".format(proxy)},allow_redirects=False)
+                if html.status_code == 200:
+                    request.meta['proxy'] = "http://%s" % proxy
+                    return request
+                retry_count -= 1
+            except Exception:
+                retry_count -= 1
         # return None
+        # 出错5次, 删除代理池中代理
+        self.delete_proxy(proxy)
+        return self.modifyRequest(request,times-1)
+
         
     def process_request(self, request, spider):
         # Called for each request that goes through the downloader
@@ -103,7 +115,7 @@ class JobDownloaderMiddleware:
         #     "http://47.113.123.159:5010/get/").json()['proxy']
         # request.meta['proxy'] = "http://%s" % proxy
         # print(request)
-        self.modifyRequest(request)
+        self.modifyRequest(request,5)
         return None
 
     def process_response(self, request, response, spider):

@@ -20,5 +20,7 @@ class JobspiderSpider(scrapy.Spider):
             item['Jrequirements'] = ''
             item['Jcompany'] = ''
             item['Jtag'] = ''
-            item['Jwelfare']=''
+            item['Jwelfare'] = ''
+            item['Jeducation'] = ''
+            item['Jexperience']=''
             yield item
