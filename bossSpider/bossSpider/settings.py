@@ -1,6 +1,14 @@
+'''
+@Descripttion: 
+@version: 
+@Author: Paul
+@Date: 2020-06-29 17:12:23
+@LastEditors: Paul
+@LastEditTime: 2020-06-29 17:18:42
+'''
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for demo project
+# Scrapy settings for bossSpider project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -9,17 +17,17 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'demo'
+BOT_NAME = 'bossSpider'
 
-SPIDER_MODULES = ['demo.spiders']
-NEWSPIDER_MODULE = 'demo.spiders'
+SPIDER_MODULES = ['bossSpider.spiders']
+NEWSPIDER_MODULE = 'bossSpider.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-#USER_AGENT = 'demo (+http://www.yourdomain.com)'
+#USER_AGENT = 'bossSpider (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = False
+ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
@@ -43,21 +51,17 @@ ROBOTSTXT_OBEY = False
 #   'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 #   'Accept-Language': 'en',
 # }
-DEFAULT_REQUEST_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:61.0) Gecko/20100101 Firefox/61.0",
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
-}
 
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 # SPIDER_MIDDLEWARES = {
-#    'demo.middlewares.DemoSpiderMiddleware': 543,
+#    'bossSpider.middlewares.BossspiderSpiderMiddleware': 543,
 # }
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    'demo.middlewares.DemoDownloaderMiddleware': 543,
+    'bossSpider.middlewares.BossspiderDownloaderMiddleware': 543,
 }
 
 # Enable or disable extensions
@@ -68,9 +72,9 @@ DOWNLOADER_MIDDLEWARES = {
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-ITEM_PIPELINES = {
-    'demo.pipelines.DemoPipeline': 300,
-}
+# ITEM_PIPELINES = {
+#    'bossSpider.pipelines.BossspiderPipeline': 300,
+# }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html
@@ -92,6 +96,3 @@ ITEM_PIPELINES = {
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-FEED_URI = 'file:///res/t.json'
-FEED_FORMAT = 'json'
-FEED_EXPORT_ENCODING = 'UTF-8'

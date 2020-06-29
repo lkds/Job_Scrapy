@@ -1,10 +1,18 @@
-
+'''
+@Descripttion: 
+@version: 
+@Author: Paul
+@Date: 2020-06-29 17:12:23
+@LastEditors: Paul
+@LastEditTime: 2020-06-29 17:20:15
+'''
 # -*- coding: utf-8 -*-
 
 # Define your item pipelines here
 #
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+
 from scrapy.exporters import JsonItemExporter
 import pymysql
 

@@ -9,7 +9,7 @@ from scrapy import signals
 import requests
 
 
-class DemoSpiderMiddleware:
+class BossspiderSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
     # passed objects.
@@ -57,7 +57,7 @@ class DemoSpiderMiddleware:
         spider.logger.info('Spider opened: %s' % spider.name)
 
 
-class DemoDownloaderMiddleware:
+class BossspiderDownloaderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
@@ -78,7 +78,6 @@ class DemoDownloaderMiddleware:
         # - or return a Response object
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
-        #   installed downloader middleware will be called
         proxy = requests.get(
             "http://47.113.123.159:5010/get/").json()['proxy']
         request.meta['proxy'] = "http://%s" % proxy
