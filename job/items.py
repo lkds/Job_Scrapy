@@ -12,7 +12,10 @@ class JobItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     Jname = scrapy.Field()
-    Jsalary =scrapy.Field()
+    Jsalary = scrapy.Field()
+    JminSalary = scrapy.Field()
+    JmaxSalary = scrapy.Field()
+    JpayTimes = scrapy.Field()
     Jarea = scrapy.Field()
     Jtype = scrapy.Field()
     Jrequirements = scrapy.Field()
@@ -23,3 +26,6 @@ class JobItem(scrapy.Item):
     Jeducation = scrapy.Field()
     # 工作经验
     Jexperience = scrapy.Field()
+    #公司类型
+    JcomType = scrapy.Field()
+

@@ -12,8 +12,12 @@ class JobPipeline:
         self.cur=self.db.cursor()
     def process_item(self, item, spider):
         # print(item['title'])
-        sql='INSERT INTO demo(Jname,Jsalary,Jarea,Jtype,Jrequirements,Jcompany,Jtag,Jwelfare,Jeducation,Jexperience) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
-        self.cur.execute(sql,(item['Jname'],item['Jsalary'],item['Jarea'],item['Jtype'],item['Jrequirements'],item['Jcompany'],item['Jtag'],item['Jwelfare'],item['Jeducation'],item['Jexperience']))
+        sql='INSERT INTO demo(Jname,Jsalary,Jarea,Jtype,Jrequirements,Jcompany,Jtag,Jwelfare,Jeducation,Jexperience,JminSalary,JmaxSalary,JpayTimes,JcomType) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
+        self.cur.execute(sql, (item['Jname'], item['Jsalary'],
+            item['Jarea'], item['Jtype'], item['Jrequirements'],
+            item['Jcompany'], item['Jtag'], item['Jwelfare'],
+            item['Jeducation'], item['Jexperience'], item['JminSalary'],
+            item['JmaxSalary'],item['JpayTimes'],item['JcomType']))
         self.db.commit()
         return item
 
