@@ -19,3 +19,7 @@ class JobItem(scrapy.Item):
     Jcompany = scrapy.Field()
     Jtag = scrapy.Field()
     Jwelfare = scrapy.Field()
+    # 学历
+    Jeducation = scrapy.Field()
+    # 工作经验
+    Jexperience = scrapy.Field()
