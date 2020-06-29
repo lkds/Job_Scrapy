@@ -113,7 +113,7 @@ class JobDownloaderMiddleware:
         # - return a Response object
         # - return a Request object
         # - or raise IgnoreRequest
-        if (not response.status == 200):
+        if not response.status == 200:
             return self.modifyRequest(request)
         return response
 
