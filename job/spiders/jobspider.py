@@ -14,5 +14,11 @@ class JobspiderSpider(scrapy.Spider):
             # print(p)
             item['Jname'] = post.xpath(
                 './header/h1/a/text()').extract()[0].strip()
+            item['Jsalary'] = 0
+            item['Jarea'] = ''
             item['Jtype'] = post.xpath('./div/text()').extract()[0].strip()
+            item['Jrequirements'] = ''
+            item['Jcompany'] = ''
+            item['Jtag'] = ''
+            item['Jwelfare']=''
             yield item

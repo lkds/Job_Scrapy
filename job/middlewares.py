@@ -6,10 +6,11 @@
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 from scrapy import signals
+from scrapy.http import Request, Response
 import requests
 
 
-class BossspiderSpiderMiddleware:
+class JobSpiderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
     # passed objects.
@@ -57,10 +58,12 @@ class BossspiderSpiderMiddleware:
         spider.logger.info('Spider opened: %s' % spider.name)
 
 
-class BossspiderDownloaderMiddleware:
+class JobDownloaderMiddleware:
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
+    def __init__(self):
+        self.retry_count = 5
 
     @classmethod
     def from_crawler(cls, crawler):
@@ -69,6 +72,23 @@ class BossspiderDownloaderMiddleware:
         crawler.signals.connect(s.spider_opened, signal=signals.spider_opened)
         return s
 
+    def get_proxy(self):
+        return requests.get("http://47.113.123.159:5010/get/").json()
+
+    def delete_proxy(self,proxy):
+        requests.get("http://47.113.123.159:5010/delete/?proxy={}".format(proxy))
+
+    # your spider code
+
+    def modifyRequest(self,request):
+        # ....
+        proxy = self.get_proxy().get("proxy")
+        request.meta['proxy'] = "http://%s" % proxy
+        return request
+        # 出错5次, 删除代理池中代理
+        # self.delete_proxy(proxy)
+        # return None
+        
     def process_request(self, request, spider):
         # Called for each request that goes through the downloader
         # middleware.
@@ -78,9 +98,12 @@ class BossspiderDownloaderMiddleware:
         # - or return a Response object
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
-        proxy = requests.get(
-            "http://47.113.123.159:5010/get/").json()['proxy']
-        request.meta['proxy'] = "http://%s" % proxy
+        #   installed downloader middleware will be called
+        # proxy = requests.get(
+        #     "http://47.113.123.159:5010/get/").json()['proxy']
+        # request.meta['proxy'] = "http://%s" % proxy
+        # print(request)
+        self.modifyRequest(request)
         return None
 
     def process_response(self, request, response, spider):
@@ -90,6 +113,8 @@ class BossspiderDownloaderMiddleware:
         # - return a Response object
         # - return a Request object
         # - or raise IgnoreRequest
+        if (not response.status == 200):
+            return self.modifyRequest(request)
         return response
 
     def process_exception(self, request, exception, spider):
@@ -100,7 +125,9 @@ class BossspiderDownloaderMiddleware:
         # - return None: continue processing this exception
         # - return a Response object: stops process_exception() chain
         # - return a Request object: stops process_exception() chain
+        # return self.modifyRequest(request)
         pass
+        # return None
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
