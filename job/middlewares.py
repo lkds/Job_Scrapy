@@ -123,7 +123,8 @@ class JobDownloaderMiddleware:
         #     "http://47.113.123.159:5010/get/").json()['proxy']
         # request.meta['proxy'] = "http://%s" % proxy
         # print(request)
-        self.modifyRequest(request,5)
+        if hasattr(spider,"useProxy") and spider.useProxy:
+            self.modifyRequest(request,5)
         return None
 
     def process_response(self, request, response, spider):
@@ -133,7 +134,7 @@ class JobDownloaderMiddleware:
         # - return a Response object
         # - return a Request object
         # - or raise IgnoreRequest
-        if not response.status == 200:
+        if (not response.status == 200) and hasattr(spider,"useProxy") and spider.useProxy:
             return self.modifyRequest(request,5)
         return response
 
