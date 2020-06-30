@@ -13,7 +13,7 @@ class JobspiderSpider(scrapy.Spider):
         for post in response.xpath("//article/div"):
             # print(p)
             #职位名称
-            item['Jdb']='demo'
+            # item['Jdb']='demo'
             item['Jname'] = post.xpath(
                 './header/h1/a/text()').extract()[0].strip()
             #薪水 已废弃 换成了最低薪资和最高薪资

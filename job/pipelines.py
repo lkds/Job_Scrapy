@@ -14,8 +14,10 @@ class JobPipeline:
         # print(item['title'])
         key = item.keys()
         val = item.values()
-        dbName = item['Jdb']
-        item.pop('Jdb')
+        dbName ='demo'
+        if 'Jdb' in  key:
+            dbName = item['Jdb']
+            item.pop('Jdb')
         sql = 'INSERT INTO {}({}) VALUES({})'.format(dbName,','.join(key), ','.join('\''+str(v)+'\'' for v in val))
         # sql='INSERT INTO demo(Jname,Jarea,Jtype,Jrequirements,Jcompany,Jtag,Jwelfare,Jeducation,Jexperience,JminSalary,JmaxSalary,JpayTimes,JcomType,JhireCount) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         # self.cur.execute(sql, (item['Jname'],
