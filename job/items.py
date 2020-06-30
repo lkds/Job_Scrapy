@@ -30,4 +30,6 @@ class JobItem(scrapy.Item):
     JcomType = scrapy.Field()
     #招聘人数
     JhireCount = scrapy.Field()
+    #公司规模
+    JcomSize = scrapy.Field()
 

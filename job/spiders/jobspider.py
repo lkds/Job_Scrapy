@@ -43,4 +43,6 @@ class JobspiderSpider(scrapy.Spider):
             # item['JcomType'] = ''
             # #招聘人数,字符串
             # item['JhireCount']='0'
+            # #公司规模
+            # item['JcomSize'] = '500-1000'
             yield item
