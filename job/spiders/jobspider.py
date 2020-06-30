@@ -7,7 +7,7 @@ class JobspiderSpider(scrapy.Spider):
     allowed_domains = ['paulzzzhang.xyz']
     start_urls = ['http://paulzzzhang.xyz/']
     def __init__(self):
-        self.useProxy = False
+        self.useProxy = True
         # pass
 
     def parse(self, response):
