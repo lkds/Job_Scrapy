@@ -102,7 +102,7 @@ class JobDownloaderMiddleware:
             except Exception:
                 retry_count -= 1
         if reget_count == 0:
-            return None
+            return self.modifyRequest(request,times-1)
         # return None
         # 出错5次, 删除代理池中代理
         self.delete_proxy(proxy)
