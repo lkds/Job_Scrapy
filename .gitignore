@@ -1,4 +1,6 @@
 **.vscode/
 *.pyc
 **.idea/
-
+.idea/
+*.epub
+*.csv
