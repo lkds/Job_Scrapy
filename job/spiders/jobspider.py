@@ -23,4 +23,5 @@ class JobspiderSpider(scrapy.Spider):
             item['Jwelfare'] = ''
             item['Jeducation'] = ''
             item['Jexperience']=''
+            print (item['Jname'])
             yield item
