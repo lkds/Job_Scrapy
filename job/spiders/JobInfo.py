@@ -4,7 +4,7 @@
 @Author: Paul
 @Date: 2020-06-30 08:10:53
 @LastEditors: Paul
-@LastEditTime: 2020-06-30 11:29:41
+@LastEditTime: 2020-06-30 21:27:18
 '''
 # -*- coding: utf-8 -*-
 import scrapy
@@ -13,11 +13,8 @@ import json
 
 class JobinfoSpider(scrapy.Spider):
     name = 'JobInfo'
-    allowed_domains = ['zhipin.com']
-    start_urls = ['https://www.zhipin.com/wapi/zpCommon/data/oldindustry.json'
-                  ]
-    urls = ['https://www.zhipin.com/wapi/zpCommon/data/city.json',
-            'https://www.zhipin.com/wapi/zpCommon/data/oldindustry.json']
+    allowed_domains = ['www.lagou.com']
+    start_urls = ['https://www.lagou.com/jobs/allCity.html']
 
     headers = {
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -33,12 +30,6 @@ class JobinfoSpider(scrapy.Spider):
             file.write(json.dumps(data, indent=2, ensure_ascii=False))
         print("finished")
 
-    def start_request(self, response):
-        for url in urls:
-            yield Request(url=url, callback=self.parse)
-
     def parse(self, response):
-        print("=====================================")
-        result = json.loads(response.text)
-        self.writeJson(result)
-        print("=====================================")
+        for items in response.xpath('//*[@id="main_container"]/div/div[1]/table[2]/tbody/tr[1]/td[2]/ul/li[1]/a'):
+            print(items)
