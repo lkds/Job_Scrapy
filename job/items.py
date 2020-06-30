@@ -32,4 +32,6 @@ class JobItem(scrapy.Item):
     JhireCount = scrapy.Field()
     #公司规模
     JcomSize = scrapy.Field()
+    #数据表名
+    Jdb = scrapy.Field()
 
