@@ -63,6 +63,7 @@ class LiepinSpider(scrapy.Spider):
         
             item['Jeducation'] = post.xpath("./div/div[1]/p[1]/span[@class='edu']/text()").extract()[0]
             item['Jexperience'] = post.xpath("./div/div[1]/p[1]/span[3]/text()").extract()[0]
+            item['JhireCount'] = ""
             print(item)
        
         yield item
