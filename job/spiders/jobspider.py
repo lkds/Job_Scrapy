@@ -8,6 +8,7 @@ class JobspiderSpider(scrapy.Spider):
     start_urls = ['http://paulzzzhang.xyz/']
     def __init__(self):
         self.useProxy = True
+        self.Jdb = 'demo'
         # pass
 
     def parse(self, response):
