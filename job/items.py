@@ -28,4 +28,6 @@ class JobItem(scrapy.Item):
     Jexperience = scrapy.Field()
     #公司类型
     JcomType = scrapy.Field()
+    #招聘人数
+    JhireCount = scrapy.Field()
 
