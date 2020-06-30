@@ -20,7 +20,8 @@ class A51jobSpider(scrapy.Spider):
         for link in links:
             # 提取列表里每个链接，发送请求并调用callback处理
             yield scrapy.Request(link, callback=self.parse_item)
-        if self.offset <= 2:
+        totalPage = response.xpath("//*[@id='resultList']/div[55]/div/div/div/span[1]/text()").extract()[0]
+        if self.offset <= int(re.sub("[^0-9]","",totalPage)):
             self.offset += 1
             yield scrapy.Request(self.url + str(self.offset) + ".html?", callback=self.parse)
 
