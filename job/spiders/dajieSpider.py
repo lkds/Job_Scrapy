@@ -21,6 +21,7 @@ class DajiejobSpider(scrapy.Spider):
         "accept": "application/json, text/javascript, */*; q=0.01",
         "accept-encoding": "gzip, deflate, br",
         "accept-language": "zh-CN,zh;q=0.9",
+ 
         #"content-type": "text/html;charset=UTF-8",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Safari/537.36 Core/1.70.3765.400 QQBrowser/10.6.4153.400",
         "referer": "https://so.dajie.com/job/search"
@@ -49,17 +50,25 @@ class DajiejobSpider(scrapy.Spider):
             # 打印招聘信息的数量
             print("Job Num:" + str(html.get('data').get('total')))
             results = html.get('data').get('list')
+            print(html.get('data').get('nowPage')) 
             if len(results) > 0:
                 for result in results:
                     item = JobItem()
+                    # 定义一个数组存储工资上下限边界
                     Salary = []
-                    Salary = result.get('salary').strip().replace(" ", "").replace("/月", "").replace("K", "").split("-")
-                    # 最低工资
-                    item['JminSalary'] = Salary[0]
-                    # 最高工资
-                    item['JmaxSalary'] = Salary[1]
+                    Salary = result.get('salary').strip().replace(" ", "").replace("/月", "").replace("K", "").replace("+","").split("-")
+                    if len(Salary) == 2:
+                        # 最低工资
+                        item['JminSalary'] = int(Salary[0])
+                        # 最高工资
+                        item['JmaxSalary'] = int(Salary[1])
+                    else:
+                        # 最低工资
+                        item['JminSalary'] = int(Salary[0])
+                        # 最高工资
+                        item['JmaxSalary'] = int(Salary[0])   
                     # 年薪
-                    item['JpayTimes'] = ''#float( item['JminSalary'] + item['JmaxSalary'] ) / 2
+                    item['JpayTimes'] = 12#float( item['JminSalary'] + item['JmaxSalary'] ) / 2
                     # 工作地点  
                     item['Jarea'] = result.get('pubCity')
                     # 职位类型
@@ -88,7 +97,7 @@ class DajiejobSpider(scrapy.Spider):
             self.curPage = self.curPage + 1
             if (self.curPage <= totalPage):
                 self.url = 'https://so.dajie.com/job/ajax/search/filter?keyword=&order=0&city=&recruitType=&salary=&experience=&page=' + str(
-                    self.curPage) + '&positionFunction=&_CSRFToken=&ajax=1'
+                    self.curPage) + '&positionFunction=&_CSRFToken=Zm7ka3A7nTyN_9zo9OzQpCZE9S4RnD06U4r5CQ**&ajax=1'
                 yield self.next_request()
         else:
             #如果信息获取失败，十秒后再次获取
