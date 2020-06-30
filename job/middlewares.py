@@ -85,16 +85,24 @@ class JobDownloaderMiddleware:
         if (times == 0):
             return None
         proxy = self.get_proxy().get("proxy")
-        retry_count=3
-        while retry_count>0:
+        if not proxy:
+            print("代理池为空！")
+            return None
+        #连接失败的次数
+        retry_count = 5
+        #返回无效的次数
+        reget_count = 3
+        while retry_count>0 and reget_count > 0:
             try:
                 html = requests.get(request.url, proxies={"http": "http://{}".format(proxy)},allow_redirects=False)
                 if html.status_code == 200:
                     request.meta['proxy'] = "http://%s" % proxy
                     return request
-                retry_count -= 1
+                reget_count -= 1
             except Exception:
                 retry_count -= 1
+        if reget_count == 0:
+            return None
         # return None
         # 出错5次, 删除代理池中代理
         self.delete_proxy(proxy)
@@ -126,7 +134,7 @@ class JobDownloaderMiddleware:
         # - return a Request object
         # - or raise IgnoreRequest
         if not response.status == 200:
-            return self.modifyRequest(request)
+            return self.modifyRequest(request,5)
         return response
 
     def process_exception(self, request, exception, spider):
