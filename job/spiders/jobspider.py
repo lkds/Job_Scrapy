@@ -9,10 +9,11 @@ class JobspiderSpider(scrapy.Spider):
 
     def parse(self, response):
         item = JobItem()
-
+        #存储的数据库
         for post in response.xpath("//article/div"):
             # print(p)
             #职位名称
+            # item['Jdb']='demo'
             item['Jname'] = post.xpath(
                 './header/h1/a/text()').extract()[0].strip()
             #薪水 已废弃 换成了最低薪资和最高薪资
@@ -43,4 +44,6 @@ class JobspiderSpider(scrapy.Spider):
             # item['JcomType'] = ''
             # #招聘人数,字符串
             # item['JhireCount']='0'
+            # #公司规模
+            # item['JcomSize'] = '500-1000'
             yield item
