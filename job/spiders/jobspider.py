@@ -41,4 +41,6 @@ class JobspiderSpider(scrapy.Spider):
             item['JpayTimes'] = 0
             #公司类型
             item['JcomType'] = ''
+            #招聘人数,字符串
+            item['JhireCount']='0'
             yield item
