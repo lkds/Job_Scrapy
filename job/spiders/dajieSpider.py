@@ -20,9 +20,10 @@ class DajiejobSpider(scrapy.Spider):
     headers = {
         "accept": "application/json, text/javascript, */*; q=0.01",
         "accept-encoding": "gzip, deflate, br",
-        "content-type": "text/html;charset=UTF-8",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.140 Safari/537.36",
-        "referer": "https://so.dajie.com/job/search?cityId=&cname=&from=job"
+        "accept-language": "zh-CN,zh;q=0.9",
+        #"content-type": "text/html;charset=UTF-8",
+        "user-agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.25 Safari/537.36 Core/1.70.3765.400 QQBrowser/10.6.4153.400",
+        "referer": "https://so.dajie.com/job/search"
     }
     formData = {}
 
@@ -30,7 +31,7 @@ class DajiejobSpider(scrapy.Spider):
         # 使用CookieJar获得cookie值
         cookie = http.cookiejar.CookieJar()
         opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cookie))
-        session = opener.open("https://so.dajie.com/job/search?cityId=&cname=&from=job")
+        session = opener.open("https://so.dajie.com/job/search")
         session_cookie = re.findall(r"SO_COOKIE_V2=.+?;", str(session.info()))[0].split("=")[1]
         self.cookie = session_cookie.strip(";")
         return [self.next_request()]
@@ -43,21 +44,25 @@ class DajiejobSpider(scrapy.Spider):
         except ValueError:
             print(response.body)
             yield self.next_request()
-        # 
+        # 判断获取信息是否成功
         if (html.get("result") == 0):
-            print("dajie Num:" + str(html.get('data').get('total')))
+            # 打印招聘信息的数量
+            print("Job Num:" + str(html.get('data').get('total')))
             results = html.get('data').get('list')
             if len(results) > 0:
                 for result in results:
                     item = JobItem()
-                    Salary = result.get('salary').replace(" ", "").replace("/月", "").replace("K", "").replace("-","")
+                    Salary = []
+                    Salary = result.get('salary').strip().replace(" ", "").replace("/月", "").replace("K", "").split("-")
                     # 最低工资
-                    item['JminSalary'] = int(Salary[0] * 1000)
+                    item['JminSalary'] = Salary[0]
                     # 最高工资
-                    item['JmaxSalary'] = int(Salary[1] * 1000)
+                    item['JmaxSalary'] = Salary[1]
+                    # 年薪
+                    item['JpayTimes'] = ''#float( item['JminSalary'] + item['JmaxSalary'] ) / 2
                     # 工作地点  
                     item['Jarea'] = result.get('pubCity')
-                    # 公司类型
+                    # 职位类型
                     item['Jtype'] = result.get('industryName')
                     # 公司规模
                     #item['company_size'] = result.get('scaleName')
@@ -68,13 +73,15 @@ class DajiejobSpider(scrapy.Spider):
                     # 学历要求
                     item['Jeducation'] = result.get('pubEdu')
                     # 公司名字
-                    item[''] = result.get('compName')
+                    item['Jcompany'] = result.get('compName')
                     # 职位标签
                     item['Jtag'] = ''
                     # 公司福利
                     item['Jwelfare'] = ''
                     # 职位要求
                     item['Jrequirements'] = ''
+                    # 招聘人数
+                    item['JhireCount']=''
                     yield item
             # 取得网页总页数
             totalPage = html.get('data').get("totalPage")
@@ -84,6 +91,7 @@ class DajiejobSpider(scrapy.Spider):
                     self.curPage) + '&positionFunction=&_CSRFToken=&ajax=1'
                 yield self.next_request()
         else:
+            #如果信息获取失败，十秒后再次获取
             time.sleep(10)
             yield self.next_request()
 
