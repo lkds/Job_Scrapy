@@ -15,7 +15,7 @@ class DajiejobSpider(scrapy.Spider):
     start_urls = ['https://so.dajie.com/']
     curPage = 1
     cookie = ""
-    url = 'https://so.dajie.com/job/ajax/search/filter?keyword=&order=0&city=&recruitType=&salary=&experience=&page=1&positionFunction=&_CSRFToken=Zm7ka3A7nTyN_9zo9OzQpCZE9S4RnD06U4r5CQ**&ajax=1'
+    url = 'https://so.dajie.com/job/ajax/search/filter?keyword=&order=0&city=&recruitType=&salary=&experience=&page=1&positionFunction=&_CSRFToken=&ajax=1'
     # 加上请求头，伪装成浏览器访问
     headers = {
         "accept": "application/json, text/javascript, */*; q=0.01",
@@ -27,6 +27,12 @@ class DajiejobSpider(scrapy.Spider):
         "referer": "https://so.dajie.com/job/search"
     }
     formData = {}
+
+    s = set()
+
+    def __init__(self):
+        self.Jdb = 'dj'
+        self.useProxy = True
 
     def start_requests(self):
         # 使用CookieJar获得cookie值
@@ -43,7 +49,7 @@ class DajiejobSpider(scrapy.Spider):
             # 取响应信息中的响应体并进行解码
             html = json.loads(response.body.decode("utf-8"))
         except ValueError:
-            print(response.body)
+            # print(response.body)
             yield self.next_request()
         # 判断获取信息是否成功
         if (html.get("result") == 0):
@@ -83,21 +89,26 @@ class DajiejobSpider(scrapy.Spider):
                     item['Jeducation'] = result.get('pubEdu')
                     # 公司名字
                     item['Jcompany'] = result.get('compName')
-                    # 职位标签
-                    item['Jtag'] = ''
-                    # 公司福利
-                    item['Jwelfare'] = ''
-                    # 职位要求
-                    item['Jrequirements'] = ''
-                    # 招聘人数
-                    item['JhireCount']=''
-                    yield item
+                    # # 职位标签
+                    # item['Jtag'] = ''
+                    # # 公司福利
+                    # item['Jwelfare'] = ''
+                    # # 职位要求
+                    # item['Jrequirements'] = ''
+                    # # 招聘人数
+                    # item['JhireCount']=''
+                    tItem = tuple(item.values())
+                    if (tItem not in self.s):
+                        self.s.add(tItem)
+                        yield item
+                    else:
+                        print("duplicated")
             # 取得网页总页数
             totalPage = html.get('data').get("totalPage")
             self.curPage = self.curPage + 1
             if (self.curPage <= totalPage):
                 self.url = 'https://so.dajie.com/job/ajax/search/filter?keyword=&order=0&city=&recruitType=&salary=&experience=&page=' + str(
-                    self.curPage) + '&positionFunction=&_CSRFToken=Zm7ka3A7nTyN_9zo9OzQpCZE9S4RnD06U4r5CQ**&ajax=1'
+                    self.curPage) + '&positionFunction=&_CSRFToken=&ajax=1'
                 yield self.next_request()
         else:
             #如果信息获取失败，十秒后再次获取
