@@ -4,7 +4,7 @@
 @Author: Paul
 @Date: 2020-06-29 20:42:18
 @LastEditors: Paul
-@LastEditTime: 2020-07-01 09:27:23
+@LastEditTime: 2020-07-01 09:45:41
 '''
 # -*- coding: utf-8 -*-
 import json
@@ -114,7 +114,6 @@ class lagouJobSpider(scrapy.Spider):
         result = json.loads(response.text)
 
         jobs = result['content']['positionResult']['result']
-        print(jobs)
         for job in jobs:
             jobInfo['Jname'] = job['positionName']
             jobInfo['Jsalary'] = job['salary']
