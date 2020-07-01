@@ -12,6 +12,9 @@ class A51jobSpider(scrapy.Spider):
     offset = 1
     start_urls = [url + str(offset) + ".html?"]
 
+    def __init__(self):
+        # self.useProxy = True
+        self.Jdb = '51job'
     # 处理请求的方法
     def parse(self, response):
         # yield item
@@ -39,8 +42,7 @@ class A51jobSpider(scrapy.Spider):
             item['Jname'] = response.xpath('//div[@class="in"]/div[@class="cn"]/h1/@title').extract()[0]
             # 工作地点
             Jarea = response.xpath('//div[@class="cn"]/p[2]/text()').extract()[0]
-            # item['Jarea'] = Jarea.strip().split("-")[0]
-            item['Jarea'] = Jarea.strip()
+            item['Jarea'] = Jarea.strip().split("-")[0]
             # 公司福利
             Jwelfare = response.xpath('//div[@class="jtag"]/div/span/text()').extract()
             if Jwelfare:
@@ -63,10 +65,21 @@ class A51jobSpider(scrapy.Spider):
             item['Jeducation'] = Jeducation.strip()
             # 工作经验
             Jexperience = response.xpath('//div[@class="cn"]/p[2]/text()').extract()[1]
-            item['Jexperience'] = Jexperience.strip().replace("经验", "").replace("无工作", "不限")
+            Jexperience2 = Jexperience.strip().replace("经验", "").replace("无工作", "不限").split("年")[0]
+            if Jexperience2 == '无需':
+                item['Jexperience'] = 0
+            else:
+                item['Jexperience'] = Jexperience2
+            if Jexperience2 == '在校生/应届生':
+                item['JisSchoolJob'] = 1
+                item['Jexperience'] = 0
+            else:
+                item['JisSchoolJob'] = 0
             # 招的人数
             JhireCount = response.xpath('//div[@class="cn"]/p[2]/text()').extract()[3]
-            item['JhireCount'] = JhireCount.strip()
+            item['JhireCount'] = JhireCount.strip().split("人")[0].split("招")[1]
+            JcreatedTime = response.xpath('//div[@class="cn"]/p[2]/text()').extract()[4]
+            item['JcreatedTime'] = "2020-" + JcreatedTime.strip().split("发")[0]
             # 要求
             list = response.xpath(
                 '//div[@class="tCompany_main"]//div[@class="bmsg job_msg inbox"]/ol/li/text() | //div[@class="tCompany_main"] \
@@ -76,10 +89,20 @@ class A51jobSpider(scrapy.Spider):
                 //div[@class="tCompany_main"]//div[@class="bmsg job_msg inbox"]/ol/li/p/span/text()').extract()
             item['Jrequirements'] = "".join(list).strip().replace("岗位职责:", "").replace("职位描述:", "").replace(" ", "")
             # 公司类型
-            item['JcomType'] = response.xpath('//div[@class="com_tag"]/p[1]/text()').extract()[0]
+            item['JcomType'] = response.xpath('//div[@class="com_tag"]/p[1]/text()').extract()[0].split("公")[0]
             # item['Jtag']=''
             item['Jtype']=response.xpath('//div/p[@class = "fp"]/a[@class = "el tdn"]/text()').extract()[0]
+            # 公司规模
+            JcomSize = response.xpath('//div[@class="com_tag"]/p[2]/text()').extract()
+            if JcomSize == []:
+                item['JcomSize'] = "50-150"
+            else:
+                item['JcomSize'] = JcomSize[0].split('人')[0]
+            # 详情链接
+            item['Jsite'] = '前程无忧网'
+            item['Jsource'] = response.url
             # 交给管道文件处理数据
             # print("x")
             # print(item)
+            # item['Jdb'] = "51job"
             yield item
