@@ -4,7 +4,7 @@ import time
 import random
 import winsound
 import os
-
+from job.items import JobItem
 citys = []
 
 cityList = {
@@ -268,6 +268,9 @@ class TongchengSpider(scrapy.Spider):
         "cookie": ' f=n; commontopbar_new_city_info=342%7C%E9%83%91%E5%B7%9E%7Czz; f=n; commontopbar_new_city_info=342%7C%E9%83%91%E5%B7%9E%7Czz; userid360_xml=F3CF48ED7126467184593290BC1B1E67; time_create=1596078804614; f=n; id58=e87rZl76rcBuL0XSE8r+Ag==; commontopbar_new_city_info=342%7C%E9%83%91%E5%B7%9E%7Czz; 58home=zz; commontopbar_ipcity=cq%7C%E9%87%8D%E5%BA%86%7C0; 58tj_uuid=b7a6b283-164c-4a53-801f-41ae24ca09da; new_uv=1; utm_source=; spm=; wmda_uuid=ab6e75f845322fdf7e4799122be14563; wmda_new_uuid=1; wmda_session_id_11187958619315=1593486786420-1b043b79-a62c-fa7e; xxzl_cid=d825479d0eaf43bcbeaae322dcd2a95f; xzuid=fed393c8-f064-4827-9f6f-77f1c134f6f8; xxzl_deviceid=bSjSg%2FpLSPhMXz3To3DTGposb8QSS5OfKCOQp7zBFKGo%2F%2Bp69yFBo%2F%2F6RO4x%2B83s; als=0; sessionid=f90d6564-408f-4469-b5a1-c906f06d10a8; wmda_session_id_1731916484865=1593486803416-4572a9bd-6b76-2b29; wmda_visited_projects=%3B11187958619315%3B1731916484865; new_session=0; Hm_lvt_5bcc464efd3454091cf2095d3515ea05=1593486804; Hm_lvt_b4a22b2e0b326c2da73c447b956d6746=1593486951; ipcity=cq%7C%u91CD%u5E86; myfeet_tooltip=end; Hm_lpvt_b4a22b2e0b326c2da73c447b956d6746=1593486958; city=bj; init_refer=https%253A%252F%252Fwww.baidu.com%252Flink%253Furl%253DNOfhaOA5BZ9M5IJxsIqIdfzoAJubATBzCQcvSsF3nPjifO3WaIHAwMvXULikP6ET%2526wd%253D%2526eqid%253Db5054cb2000dc14f000000055efaaf54; JSESSIONID=B1F44169D77CFD15C5297E1E40CBC639; Hm_lpvt_5bcc464efd3454091cf2095d3515ea05=1593488624'
     }
 
+    def __init__(self):
+        self.jdb = 'demo'
+
     def start_requests(self):
         return [self.next_request()]
 
@@ -290,7 +293,7 @@ class TongchengSpider(scrapy.Spider):
         if (len(job_list) > 0):
             print("job58 Nums:" + str(len(job_list)))
             for job in job_list:
-                item = dict()
+                item = JobItem()
 
                 item['Jname'] = job.css('div.job_title > div.job_name > a > span::text').extract()[-1].strip()
                 item['Jarea'] = response.css('div.zp_crumb>div.crumb_item>a::text').extract()[0].split('58')[0]
@@ -299,16 +302,25 @@ class TongchengSpider(scrapy.Spider):
 
                 item['Jeducation'] = job.css("div.job_comp > p.job_require > span::text").extract()[1].strip()
 
-                item['Jexperience'] = job.css("div.job_comp > p.job_require > span::text").extract()[2].strip()
+                item['Jexperience'] = job.css("div.job_comp > p.job_require > span::text").extract()[2].strip().split('年')[0]
 
                 welfare = job.css('div.job_title > div.job_wel > span::text').extract()
                 item['Jwelfare'] = ','.join(welfare)
 
                 salary = job.css('div.job_title > p::text').extract()[0].split('-')
-
-                item['JminSalary'] = salary[0]
-                item['JmaxSalary'] = salary[-1]
+                try:
+                    item['JminSalary'] = float(salary[0])/1000
+                    item['JmaxSalary'] = float(salary[-1])/1000
+                except:
+                    pass
+                # #公司规模
+                # item['JcomSize'] = ''
+                # #融资情况
+                # item['JcomFinanceStage'] = ''
+                #爬取的网站名
+                item['Jsource']='58同城'
                 print(item)
+                yield item
             yield self.next_request()
 
     # 发送下一个请求请求
