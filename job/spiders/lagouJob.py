@@ -4,7 +4,7 @@
 @Author: Paul
 @Date: 2020-06-29 20:42:18
 @LastEditors: Paul
-@LastEditTime: 2020-07-01 09:45:41
+@LastEditTime: 2020-07-01 11:45:59
 '''
 # -*- coding: utf-8 -*-
 import json
@@ -15,7 +15,7 @@ import re
 import sys
 import time
 from urllib import parse
-
+from urllib import parse
 import execjs
 import requests
 import scrapy
@@ -33,7 +33,10 @@ class lagouJobSpider(scrapy.Spider):
     start_urls = ['https://www.lagou.com']
     urls = "https://www.lagou.com/jobs/positionAjax.json?city="
     # Post请求的参数
-
+    headers = {
+        "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36",
+        "referer": "https://www.lagou.com/jobs/list_/p-city_3?px=default",
+    }
     # 拉勾中涉及的所有城市
     cities = ["安阳", "安庆", "鞍山", "安顺", "安康", "阿克苏", "阿坝藏族羌族自治州", "阿拉善盟", "北京", "保定", "蚌埠", "包头", "滨州", "宝鸡", "北海", "毕节", "亳州", "巴中", "百色", "本溪", "巴音郭楞", "巴彦淖尔", "白城", "保山", "白银", "博尔塔拉", "白山", "成都", "长沙", "重庆", "长春", "常州", "沧州", "郴州", "常德",
               "赤峰", "潮州", "滁州", "承德", "朝阳", "池州", "楚雄", "昌吉", "崇左", "东莞", "大连", "德州",
@@ -114,42 +117,63 @@ class lagouJobSpider(scrapy.Spider):
         result = json.loads(response.text)
 
         jobs = result['content']['positionResult']['result']
+        pageNo = result['content']['pageNo']
+        city = parse.unquote(response.url.split("?")[-1])
+        print("========" + city + "：" + "page :" + str(pageNo) + "======")
         for job in jobs:
             jobInfo['Jname'] = job['positionName']
             jobInfo['Jsalary'] = job['salary']
             jobInfo['JminSalary'] = job['salary']
             jobInfo['JmaxSalary'] = job['salary']
-            jobInfo['JpayTimes'] = job['salary']
+            paytimes = (int)(job['salaryMonth'])
+            if (paytimes == 0):
+                paytimes = 12
+            jobInfo['JpayTimes'] = paytimes
             jobInfo['Jarea'] = job['city']
-            jobInfo['Jtype'] = job['financeStage']
-            jobInfo['Jrequirements'] = job['financeStage']
-            jobInfo['Jtype'] = job['financeStage']
-            jobInfo['Jtype'] = job['financeStage']
-            jobInfo['Jtype'] = job['financeStage']
-            print(jobInfo)
+            jobInfo['Jtype'] = job['industryField']
+           # jobInfo['Jrequirements'] = job['financeStage']
+            jobInfo['Jcompany'] = job['companyFullName']
+            jobInfo['Jtag'] = ",".join(job['industryLables'])
+            jobInfo['Jwelfare'] = job['positionAdvantage']
+            jobInfo['Jeducation'] = job['education']
+            jobInfo['Jexperience'] = job['workYear']
+            #jobInfo['JcomType'] = job['financeStage']
+            jobInfo['JhireCount'] = job['financeStage']
+            # todo 公司格式处理
+            jobInfo['JcomSize'] = job['companySize']
+            jobInfo['JcreatedTime'] = job['createTime']
+            self.saveData(jobInfo)
+
+        # 同一城市的翻页
+        if (pageNo != 0):
+            cookiesDict = self.run()
+            #formdata = self.data
+
+            data = {"first": "false", "pn": "0", "kd": ""}
+            data["pn"] = str(pageNo + 1)
+            yield scrapy.FormRequest(url=response.url, headers=self.headers, cookies=cookiesDict, formdata=data)
 
     def nextCityURL(self):
         """
             构造不同的城市url 并发起post请求
         """
         print("=============next_url===============")
-        headers = {
-            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36",
-            "referer": "https://www.lagou.com/jobs/list_/p-city_3?px=default",
-        }
 
         for city in self.cities:
             time.sleep(2)
-            url = "https://www.lagou.com/jobs/positionAjax.json?city={}".format(
+            self.url = "https://www.lagou.com/jobs/positionAjax.json?city={}".format(
                 city)
             cookiesDict = self.run()
             #formdata = self.data
             data = {"first": "false", "pn": "0", "kd": ""}
             print("===========" + city + "==========")
-            yield scrapy.FormRequest(url=url, headers=headers, cookies=cookiesDict, formdata=data)
+            yield scrapy.FormRequest(url=self.url, headers=self.headers, cookies=cookiesDict, formdata=data)
 
-    def saveData(self, dict):
+    def saveData(self, jobdict):
         """
           使用items以及pipeline实现爬虫数据持久化
+          :params: dict 爬取到的一条信息
         """
         print("===========save=============")
+        item = JobItem()
+        item = jobdict
