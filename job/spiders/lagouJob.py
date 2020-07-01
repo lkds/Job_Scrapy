@@ -4,7 +4,7 @@
 @Author: Paul
 @Date: 2020-06-29 20:42:18
 @LastEditors: Paul
-@LastEditTime: 2020-07-01 16:05:48
+@LastEditTime: 2020-07-01 18:21:38
 '''
 # -*- coding: utf-8 -*-
 import json
@@ -61,7 +61,7 @@ class lagouJobSpider(scrapy.Spider):
 
     def __init__(self, *args, **kwargs):
         self.js = execjs.compile(open("job\\resource\\lagou.js", "r").read())
-        self.Jdb = 'lagou'
+        self.Jdb = 'lagoujob'
 
     def writeJson(self, data):
 
@@ -114,7 +114,7 @@ class lagouJobSpider(scrapy.Spider):
             对response进行处理  reponse格式为Json
         """
         print("===========parse==========")
-        jobInfo = {}
+        jobInfo = JobItem()
         result = json.loads(response.text)
 
         jobs = result['content']['positionResult']['result']
@@ -122,35 +122,41 @@ class lagouJobSpider(scrapy.Spider):
         city = parse.unquote(response.url.split("?")[-1])
         print("========" + city + "：" + "page :" + str(pageNo) + "======")
         for job in jobs:
-            jobInfo['Jname'] = job['positionName']
-            jobInfo['Jsalary'] = job['salary']
-            jobInfo['JminSalary'] = job['salary'].split('-')[0]
-            jobInfo['JmaxSalary'] = job['salary'].split('-')[-1]
-            paytimes = (int)(job['salaryMonth'])
+            print("here")
+            jobInfo['Jname'] = job.get('positionName')
+            jobInfo['JminSalary'] = (int)(job.get(
+                'salary').split('-')[0].replace("k", ""))
+            jobInfo['JmaxSalary'] = (int)(job.get(
+                'salary').split('-')[-1].replace("k", ""))
+            paytimes = (int)(job.get('salaryMonth'))
             if (paytimes == 0):
                 paytimes = 12
             jobInfo['JpayTimes'] = paytimes
-            jobInfo['Jarea'] = job['city']
-            jobInfo['Jtype'] = job['industryField']
+            jobInfo['Jarea'] = job.get('city')
+            jobInfo['Jtype'] = job.get('industryField')
            # jobInfo['Jrequirements'] = job['financeStage']
-            jobInfo['Jcompany'] = job['companyFullName']
-            jobInfo['Jtag'] = "/".join(job['industryLables'])
+            jobInfo['Jcompany'] = job.get('companyFullName')
+            jobInfo['Jtag'] = "/".join(job.get('industryLables'))
             #
-            jobInfo['Jwelfare'] = job['positionAdvantage']
-            jobInfo['Jeducation'] = job['education']
+            jobInfo['Jwelfare'] = job.get('positionAdvantage')
+            jobInfo['Jeducation'] = job.get('education')
+            # todo finished
+            jobInfo['Jexperience'] = self.modifyJexperience(
+                job.get('workYear'))
 
-            jobInfo['Jexperience'] = job['workYear']
-            jobInfo['JcomFinanceStage'] = self.modifycomFinanceStage([
-                                                                     'financeStage'])
-            jobInfo['Jlocation'] = "(" + job['latitude'] + \
-                "," + job['longitude'] + ")"
-            jobInfo['JisSchoolJob'] = job['financeStage']
-            jobInfo['JcomSize'] = self.modifyComSize(job['companySize'])
-            jobInfo['JcreatedTime'] = job['createTime']
-            jobInfo['JisSchoolJob'] = job['isSchoolJob']
-            jobInfo['Jsource'] = "拉勾"
+            jobInfo['JcomFinanceStage'] = self.modifycomFinanceStage(job.get(
+                'financeStage'))
+            if(job.get('latitude') != None and job.get('longitude') != None):
+                jobInfo['Jlocation'] = "(" + job.get('latitude') + \
+                    "," + job.get('longitude') + ")"
+            jobInfo['JisSchoolJob'] = job.get('financeStage')
+            jobInfo['JcomSize'] = self.modifyComSize(job.get('companySize'))
+            jobInfo['JcreatedTime'] = job.get('createTime')
+            jobInfo['JisSchoolJob'] = job.get('isSchoolJob')
+            jobInfo['Jsource'] = response.url
+            jobInfo['Jsite'] = "拉勾"
 
-            self.saveData(jobInfo)
+            yield jobInfo
 
         # 同一城市的翻页
         if (pageNo != 0):
@@ -162,22 +168,30 @@ class lagouJobSpider(scrapy.Spider):
 
     def modifyComSize(self, comSize):
         if (comSize.find("少于") != -1 or comSize.find("以上") != -1):
-            return re.findall(r'\d+', comSize)
+            return re.findall(r'\d+', comSize)[0]
         elif(comSize.find('-') != -1):
-            return re.findall(r'\d+\-\d+', comSize)
+            return re.findall(r'\d+\-\d+', comSize)[0]
         else:
             return
 
     def modifycomFinanceStage(self, comSize):
         if (comSize.find("轮") != -1):
-            if (comSize.find("天使") == -1):
+            if (comSize.find("天使") != -1):
                 return "天使轮"
             else:
-                return re.findall(r'\w+')
+                return re.findall(r'\w', comSize)[0] + "轮"
         elif (comSize.find("上市") != -1):
             return "上市"
         elif (comSize.find("融资")):
             return "无"
+
+    def modifyJexperience(self, exp):
+        if (exp.find("以上") != -1):
+            return "10+"
+        elif (exp.find("-") != -1):
+            return re.findall(r'\d+\-\d+', exp)[0]
+        else:
+            return exp
 
     def nextCityURL(self):
         """
@@ -202,3 +216,4 @@ class lagouJobSpider(scrapy.Spider):
         """
         item = JobItem()
         item = jobdict
+        yield item
