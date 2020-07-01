@@ -44,3 +44,5 @@ class JobItem(scrapy.Item):
     JcreatedTime = scrapy.Field()
     #来源
     Jsource = scrapy.Field()
+    #网站
+    Jsite = scrapy.Field()

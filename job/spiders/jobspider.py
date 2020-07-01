@@ -50,7 +50,7 @@ class JobspiderSpider(scrapy.Spider):
             # item['JhireCount']='0'
             # #公司规模
             # item['JcomSize'] = '500-1000'
-            item['JcreatedTime'] = '2020-12-3 11:23:56'
+            item['JcreatedTime'] = '2020-12-03'
             item['JisSchoolJob'] = 1
             item['Jlocation'] = '(23.45443,135.74434)'
             yield item
