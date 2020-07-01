@@ -4,7 +4,7 @@
 @Author: Paul
 @Date: 2020-06-30 08:10:53
 @LastEditors: Paul
-@LastEditTime: 2020-06-30 21:27:18
+@LastEditTime: 2020-06-30 21:31:00
 '''
 # -*- coding: utf-8 -*-
 import scrapy
@@ -31,5 +31,7 @@ class JobinfoSpider(scrapy.Spider):
         print("finished")
 
     def parse(self, response):
+        print(response.xpath(
+            '//*[@id="main_container"]/div/div[1]/table[2]/tbody/tr[1]/td[2]/ul/li[1]/a/@href'))
         for items in response.xpath('//*[@id="main_container"]/div/div[1]/table[2]/tbody/tr[1]/td[2]/ul/li[1]/a'):
             print(items)
