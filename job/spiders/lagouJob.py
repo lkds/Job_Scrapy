@@ -4,7 +4,7 @@
 @Author: Paul
 @Date: 2020-06-29 20:42:18
 @LastEditors: Paul
-@LastEditTime: 2020-07-01 11:45:59
+@LastEditTime: 2020-07-01 16:05:48
 '''
 # -*- coding: utf-8 -*-
 import json
@@ -61,6 +61,7 @@ class lagouJobSpider(scrapy.Spider):
 
     def __init__(self, *args, **kwargs):
         self.js = execjs.compile(open("job\\resource\\lagou.js", "r").read())
+        self.Jdb = 'lagou'
 
     def writeJson(self, data):
 
@@ -123,8 +124,8 @@ class lagouJobSpider(scrapy.Spider):
         for job in jobs:
             jobInfo['Jname'] = job['positionName']
             jobInfo['Jsalary'] = job['salary']
-            jobInfo['JminSalary'] = job['salary']
-            jobInfo['JmaxSalary'] = job['salary']
+            jobInfo['JminSalary'] = job['salary'].split('-')[0]
+            jobInfo['JmaxSalary'] = job['salary'].split('-')[-1]
             paytimes = (int)(job['salaryMonth'])
             if (paytimes == 0):
                 paytimes = 12
@@ -133,25 +134,50 @@ class lagouJobSpider(scrapy.Spider):
             jobInfo['Jtype'] = job['industryField']
            # jobInfo['Jrequirements'] = job['financeStage']
             jobInfo['Jcompany'] = job['companyFullName']
-            jobInfo['Jtag'] = ",".join(job['industryLables'])
+            jobInfo['Jtag'] = "/".join(job['industryLables'])
+            #
             jobInfo['Jwelfare'] = job['positionAdvantage']
             jobInfo['Jeducation'] = job['education']
+
             jobInfo['Jexperience'] = job['workYear']
-            #jobInfo['JcomType'] = job['financeStage']
-            jobInfo['JhireCount'] = job['financeStage']
-            # todo 公司格式处理
-            jobInfo['JcomSize'] = job['companySize']
+            jobInfo['JcomFinanceStage'] = self.modifycomFinanceStage([
+                                                                     'financeStage'])
+            jobInfo['Jlocation'] = "(" + job['latitude'] + \
+                "," + job['longitude'] + ")"
+            jobInfo['JisSchoolJob'] = job['financeStage']
+            jobInfo['JcomSize'] = self.modifyComSize(job['companySize'])
             jobInfo['JcreatedTime'] = job['createTime']
+            jobInfo['JisSchoolJob'] = job['isSchoolJob']
+            jobInfo['Jsource'] = "拉勾"
+
             self.saveData(jobInfo)
 
         # 同一城市的翻页
         if (pageNo != 0):
             cookiesDict = self.run()
-            #formdata = self.data
 
             data = {"first": "false", "pn": "0", "kd": ""}
             data["pn"] = str(pageNo + 1)
             yield scrapy.FormRequest(url=response.url, headers=self.headers, cookies=cookiesDict, formdata=data)
+
+    def modifyComSize(self, comSize):
+        if (comSize.find("少于") != -1 or comSize.find("以上") != -1):
+            return re.findall(r'\d+', comSize)
+        elif(comSize.find('-') != -1):
+            return re.findall(r'\d+\-\d+', comSize)
+        else:
+            return
+
+    def modifycomFinanceStage(self, comSize):
+        if (comSize.find("轮") != -1):
+            if (comSize.find("天使") == -1):
+                return "天使轮"
+            else:
+                return re.findall(r'\w+')
+        elif (comSize.find("上市") != -1):
+            return "上市"
+        elif (comSize.find("融资")):
+            return "无"
 
     def nextCityURL(self):
         """
@@ -164,7 +190,7 @@ class lagouJobSpider(scrapy.Spider):
             self.url = "https://www.lagou.com/jobs/positionAjax.json?city={}".format(
                 city)
             cookiesDict = self.run()
-            #formdata = self.data
+            # formdata = self.data
             data = {"first": "false", "pn": "0", "kd": ""}
             print("===========" + city + "==========")
             yield scrapy.FormRequest(url=self.url, headers=self.headers, cookies=cookiesDict, formdata=data)
@@ -174,6 +200,5 @@ class lagouJobSpider(scrapy.Spider):
           使用items以及pipeline实现爬虫数据持久化
           :params: dict 爬取到的一条信息
         """
-        print("===========save=============")
         item = JobItem()
         item = jobdict
