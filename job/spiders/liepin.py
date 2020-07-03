@@ -63,7 +63,7 @@ class LiepinSpider(scrapy.Spider):
 
             # item['JcomFinanceStage'] = post.xpath("./div/div[2]/p[2][@class='field-financing']/span/text()").extract()[0].strip()
             
-            item['JcomType'] = post.xpath("//div[@class='selected-condition']/dl/dd/span[2]/a/text()").extract()[0].replace('×','').strip()
+            item['Jtag'] = post.xpath("//div[@class='selected-condition']/dl/dd/span[2]/a/text()").extract()[0].replace('×','').strip()
             # //*[@id="sojob"]/div[1]/form/div[2]/div/div[2]/dl/dd/span[2]/a
 
             # post.xpath('./div[1]/p[1]/span[2]/text()').extract()[0].encode("utf-8")
@@ -108,7 +108,7 @@ class LiepinSpider(scrapy.Spider):
             item['Jsource'] = response.url
             item['Jsite'] = '猎聘网'
 
-            print(item)
+           # print(item)
             yield item
 
         
