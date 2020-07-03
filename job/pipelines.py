@@ -5,6 +5,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 import pymysql
+from job.data_cleaning import clean
 
 class JobPipeline:
     def __init__(self):
@@ -17,6 +18,9 @@ class JobPipeline:
         dbName ='demo'
         if hasattr(spider, 'Jdb'):
             dbName = spider.Jdb
+
+        item = clean(item)
+
         sql = 'INSERT INTO {}({}) VALUES({})'.format(dbName,','.join(key), ','.join('\''+str(v)+'\'' for v in val))
         # sql='INSERT INTO demo(Jname,Jarea,Jtype,Jrequirements,Jcompany,Jtag,Jwelfare,Jeducation,Jexperience,JminSalary,JmaxSalary,JpayTimes,JcomType,JhireCount) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)'
         # self.cur.execute(sql, (item['Jname'],
