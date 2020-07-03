@@ -188,6 +188,8 @@ class lagouJobSpider(scrapy.Spider):
     def modifyJexperience(self, exp):
         if (exp.find("以上") != -1):
             return "10+"
+        if (exp.find("以下") != -1):
+            return re.findall(r'\d', exp)[0]
         elif (exp.find("-") != -1):
             return re.findall(r'\d+\-\d+', exp)[0]
         else:
