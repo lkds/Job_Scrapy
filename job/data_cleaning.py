@@ -218,7 +218,7 @@ def clean(item):
                     if Jarea0 in i:
                         JareaFinal = k + '-' + Jarea0
         else :
-            JareaFinal = Jarea0
+            JareaFinal = Jarea0.rstrip('-')
 
     else :
         # JareaNum = len(Jarea0.split(','))
