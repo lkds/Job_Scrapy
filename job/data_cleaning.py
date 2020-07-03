@@ -198,3 +198,19 @@ def clean(item):
 #     for i in v:
 #         if cityName in i:
 #              print(k)
+
+# item['Jtype'] = sp(item['Jtype'])
+
+# def sp(name,type,tag,):
+#     """
+#     val是传进来的Jtype的原始内容
+#     """
+#     res = ''
+#     if '互联网' in val:
+#         res += 'IT互联网'
+#     if '技术' in val:
+#         res += '_'
+#         res += '技术'
+#     if 'x' in val:
+#         res += '_'
+#     return res
