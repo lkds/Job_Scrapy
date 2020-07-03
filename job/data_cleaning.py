@@ -190,7 +190,7 @@ def clean(item):
         item['Jtype'] = '教育业'
     
     elif '新闻' in (Jname0 or Jtype0 or Jtag0) or '出版' in (Jname0 or Jtype0 or Jtag0):
-        item['Jtype'] = '新闻_出版'
+        item['Jtype'] = '新闻_出版''新闻' 
 
 
     item['Jname'] = Jname0.split('(')[0].split('-')[0]
@@ -217,6 +217,8 @@ def clean(item):
                 for i in v:
                     if Jarea0 in i:
                         JareaFinal = k + '-' + Jarea0
+        else :
+            JareaFinal = Jarea0
 
     else :
         # JareaNum = len(Jarea0.split(','))
