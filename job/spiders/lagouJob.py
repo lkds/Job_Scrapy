@@ -161,8 +161,8 @@ class lagouJobSpider(scrapy.Spider):
                 jobInfo['JisSchoolJob'] = job.get('isSchoolJob')
                 jobInfo['Jsource'] = response.url
                 jobInfo['Jsite'] = "拉勾"
-                print(jobInfo)
-                #yield jobInfo
+                # print(jobInfo)
+                yield jobInfo
         except:
             pass
         # 同一城市的翻页
