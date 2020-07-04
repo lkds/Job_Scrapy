@@ -1,3 +1,6 @@
+id
+
+
 isTest = False
 area_data = {
             '北京': ['北京','朝阳区', '海淀区', '通州区', '房山区', '丰台区', '昌平区', '大兴区', '顺义区', '西城区', '延庆县', '石景山区', '宣武区', '怀柔区', '崇文区', '密云县',
@@ -42,6 +45,7 @@ area_data = {
 
 import re
 
+
 def clean(item):
     #TODO
     Jname0 = ''
@@ -75,7 +79,7 @@ def clean(item):
     elif 'C#' in (Jname0+','+Jtype0+','+Jtag0) or 'c#' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = 'IT·互联网_技术_开发_C#'
 
-    elif 'PHP' in (Jname0+','+Jtype0+','+Jtag0) or 'Php' in (Jname0+','+Jtype0+','+Jtag0):
+    elif 'PHP' in (Jname0+','+Jtype0+','+Jtag0) or 'Php' in (Jname0+','+Jtype0+','+Jtag0) or 'php' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = 'IT·互联网_技术_开发_PHP'
 
     elif '大数据' in (Jname0+','+Jtype0+','+Jtag0):
@@ -90,7 +94,7 @@ def clean(item):
     elif 'iOS' in (Jname0+','+Jtype0+','+Jtag0) or 'ios' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = 'IT·互联网_技术_移动开发及前端_iOS'
 
-    elif 'Android' in (Jname0+','+Jtype0+','+Jtag0) or 'android' in (Jname0+','+Jtype0+','+Jtag0):
+    elif 'Android' in (Jname0+','+Jtype0+','+Jtag0) or 'android' in (Jname0+','+Jtype0+','+Jtag0) or '安卓' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = 'IT·互联网_技术_移动开发及前端_Android'
 
     elif 'HTML5' in (Jname0+','+Jtype0+','+Jtag0) or 'html5' in (Jname0+','+Jtype0+','+Jtag0):
@@ -117,7 +121,7 @@ def clean(item):
     elif '运营' in (Jname0+','+Jtype0+','+Jtag0) or '主编' in (Jname0+','+Jtype0+','+Jtag0) or '副主编' in (Jname0+','+Jtype0+','+Jtag0) or '编辑' in (Jname0+','+Jtype0+','+Jtag0) or '文案策划' in (Jname0+','+Jtype0+','+Jtag0) or '记者' in (Jname0+','+Jtype0+','+Jtag0) or '网络推广' in (Jname0+','+Jtype0+','+Jtag0) or '淘宝客服' in (Jname0+','+Jtype0+','+Jtag0) or '客服经理' in (Jname0+','+Jtype0+','+Jtag0) or '客服总监' in (Jname0+','+Jtype0+','+Jtag0) or 'COO' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = 'IT·互联网_技术_运营'
     
-    elif '互联网' in (Jname0+','+Jtype0+','+Jtag0):
+    elif '互联网' in (Jname0+','+Jtype0+','+Jtag0) or '算法' in (Jname0+','+Jtype0+','+Jtag0) or '电商' in (Jname0+','+Jtype0+','+Jtag0) or 'NET' in (Jname0+','+Jtype0+','+Jtag0) or '程序员' in (Jname0+','+Jtype0+','+Jtag0) or '软件开发' in (Jname0+','+Jtype0+','+Jtag0) or '网络优化' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = 'IT·互联网'
 
     # 房地产
@@ -140,9 +144,6 @@ def clean(item):
     elif '金融' in (Jname0+','+Jtype0+','+Jtag0) or '出纳' in (Jname0+','+Jtype0+','+Jtag0) or '会计' in (Jname0+','+Jtype0+','+Jtag0) or '审计' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = '金融'
 
-    # 消费品
-    elif '食品' in (Jname0+','+Jtype0+','+Jtag0) or '店长' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '消费品'
 
     # 汽车·制造
     elif '汽车制造' in (Jname0+','+Jtype0+','+Jtag0) or '底盘' in (Jname0+','+Jtype0+','+Jtag0) or '汽车零部件' in (Jname0+','+Jtype0+','+Jtag0) or '操作工' in (Jname0+','+Jtype0+','+Jtag0):
@@ -150,7 +151,9 @@ def clean(item):
 
     elif '汽车销售' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = '汽车_营销及销售'
-
+    
+    elif '汽车' in (Jname0+','+Jtype0+','+Jtag0):
+        item['Jtype'] = '汽车'
     #医疗
 
     elif '医生' in (Jname0+','+Jtype0+','+Jtag0) or '护士' in (Jname0+','+Jtype0+','+Jtag0) or '药剂师' in (Jname0+','+Jtype0+','+Jtag0):
@@ -165,30 +168,41 @@ def clean(item):
     elif '新材料' in (Jname0+','+Jtype0+','+Jtag0) or '新能源' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = '化工_新材料/环保技术'
     
-    elif '机械' in (Jname0+','+Jtype0+','+Jtag0) or '钳工' in (Jname0+','+Jtype0+','+Jtag0):
+    elif '机械' in (Jname0+','+Jtype0+','+Jtag0) or '钳工' in (Jname0+','+Jtype0+','+Jtag0) or '焊工' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = '化工_机械'
 
     elif '石油' in (Jname0+','+Jtype0+','+Jtag0) or '天然气' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = '化工_石化'
-
+    
+    elif '半导体' in (Jname0+','+Jtype0+','+Jtag0) or '集成电路' in (Jname0+','+Jtype0+','+Jtag0):
+        item['Jtype'] = '化工_电子'
+        
+    #文娱
     elif '主播' in (Jname0+','+Jtype0+','+Jtag0) or '艺人' in (Jname0+','+Jtype0+','+Jtag0) or '歌手' in (Jname0+','+Jtype0+','+Jtag0) or '文娱' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = '文娱'
-
+        
+    #交通运输
     elif '司机' in (Jname0+','+Jtype0+','+Jtag0) or '乘务员' in (Jname0+','+Jtype0+','+Jtag0) or '机长' in (Jname0+','+Jtype0+','+Jtag0) or '空姐' in (Jname0+','+Jtype0+','+Jtag0) or '地勤' in (Jname0+','+Jtype0+','+Jtag0) or '地铁' in (Jname0+','+Jtype0+','+Jtag0) or '火车' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = '交通运输'
-    
-    elif '送餐员' in (Jname0+','+Jtype0+','+Jtag0) or '厨师' in (Jname0+','+Jtype0+','+Jtag0) or '洗盘' in (Jname0+','+Jtype0+','+Jtag0) or '服务员' in (Jname0+','+Jtype0+','+Jtag0) or '洗碗' in (Jname0+','+Jtype0+','+Jtag0) or 'chu' in (Jname0+','+Jtype0+','+Jtag0) :
-        item['Jtype'] = '服务业_餐饮'
+        
+    #服务业
+    elif '送餐员' in (Jname0+','+Jtype0+','+Jtag0) or '厨师' in (Jname0+','+Jtype0+','+Jtag0) or '洗盘' in (Jname0+','+Jtype0+','+Jtag0) or '服务员' in (Jname0+','+Jtype0+','+Jtag0) or '洗碗' in (Jname0+','+Jtype0+','+Jtag0) or '厨' in (Jname0+','+Jtype0+','+Jtag0) or '食品' in (Jname0+','+Jtype0+','+Jtag0):
+        item['Jtype'] = '服务业_食品'
 
-    elif '顺丰' in (Jname0+','+Jtype0+','+Jtag0) or '快递员' in (Jname0+','+Jtype0+','+Jtag0) or '菜鸟裹裹' in (Jname0+','+Jtype0+','+Jtag0) or '分拣员' in (Jname0+','+Jtype0+','+Jtag0):
+    elif '顺丰' in (Jname0+','+Jtype0+','+Jtag0) or '快递员' in (Jname0+','+Jtype0+','+Jtag0) or '菜鸟裹裹' in (Jname0+','+Jtype0+','+Jtag0) or '分拣员' in (Jname0+','+Jtype0+','+Jtag0) or '物流' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = '服务业_物流'
+        
+    elif '旅游' in (Jname0+','+Jtype0+','+Jtag0):
+        item['Jtype'] = '服务业_旅游'
 
-    elif '美甲师' in (Jname0+','+Jtype0+','+Jtag0) or '清洁工' in (Jname0+','+Jtype0+','+Jtag0) or '扫地' in (Jname0+','+Jtype0+','+Jtag0) or '美容师' in (Jname0+','+Jtype0+','+Jtag0) or '保安' in (Jname0+','+Jtype0+','+Jtag0) or '电话客服' in (Jname0+','+Jtype0+','+Jtag0) or '足疗师' in (Jname0+','+Jtype0+','+Jtag0) or '健身教练' in (Jname0+','+Jtype0+','+Jtag0):
+    elif '美甲师' in (Jname0+','+Jtype0+','+Jtag0) or '清洁工' in (Jname0+','+Jtype0+','+Jtag0) or '扫地' in (Jname0+','+Jtype0+','+Jtag0) or '美容师' in (Jname0+','+Jtype0+','+Jtag0) or '保安' in (Jname0+','+Jtype0+','+Jtag0) or '电话客服' in (Jname0+','+Jtype0+','+Jtag0) or '足疗师' in (Jname0+','+Jtype0+','+Jtag0) or '教练' in (Jname0+','+Jtype0+','+Jtag0) or '网管' in (Jname0+','+Jtype0+','+Jtag0)  or '管家' in (Jname0+','+Jtype0+','+Jtag0) or '店员' in (Jname0+','+Jtype0+','+Jtag0) or '店长' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = '服务业'
 
-    elif '老师' in (Jname0+','+Jtype0+','+Jtag0) or '教师' in (Jname0+','+Jtype0+','+Jtag0) or '教授' in (Jname0+','+Jtype0+','+Jtag0):
+    #教育业
+    elif '老师' in (Jname0+','+Jtype0+','+Jtag0) or '教师' in (Jname0+','+Jtype0+','+Jtag0) or '教授' in (Jname0+','+Jtype0+','+Jtag0) or '招生' in (Jname0+','+Jtype0+','+Jtag0) or '课程' in (Jname0+','+Jtype0+','+Jtag0) or '教育' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = '教育业'
     
+    #新闻
     elif '新闻' in (Jname0+','+Jtype0+','+Jtag0) or '出版' in (Jname0+','+Jtype0+','+Jtag0):
         item['Jtype'] = '新闻_出版' 
 
@@ -242,6 +256,7 @@ def clean(item):
     Jexperience0 = ''
     try:
         Jexperience0 = item['Jexperience']
+
         if Jexperience0 == '不限':
             item['Jexperience'] = '0'
 
