@@ -62,6 +62,7 @@ class lagouJobSpider(scrapy.Spider):
     def __init__(self, *args, **kwargs):
         self.js = execjs.compile(open("job\\resource\\lagou.js", "r").read())
         self.Jdb = 'lagoujob'
+        # self.Jdb = 'jobclean'
 
     def writeJson(self, data):
 
