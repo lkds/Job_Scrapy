@@ -60,7 +60,7 @@ class lagouJobSpider(scrapy.Spider):
               "郑州", "珠海", "中山", "淄博", "株洲", "肇庆", "遵义", "湛江", "周口", "漳州", "驻马店", "镇江", "张家口", "长治", "枣庄", "资阳", "舟山", "张家界", "张掖", "昭通", "自贡", "中卫"]
 
     def __init__(self, *args, **kwargs):
-        self.js = execjs.compile(open("job\\resource\\lagou.js", "r").read())
+        self.js = execjs.compile(open(os.path.join("job","resource","lagou.js"), "r").read())
         self.Jdb = 'lagoujob'
         # self.Jdb = 'jobclean'
 
