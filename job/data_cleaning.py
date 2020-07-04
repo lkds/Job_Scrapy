@@ -40,7 +40,7 @@ area_data = {
         }
 
 
-
+import re
 
 def clean(item):
     #TODO
@@ -242,11 +242,31 @@ def clean(item):
     Jexperience0 = ''
     try:
         Jexperience0 = item['Jexperience']
+        if Jexperience0 == '不限':
+            item['Jexperience'] = '0'
+
+        if re.search(r'[^\x20-\x7e]', Jexperience0) != None:
+            item['Jexperience'] = '0'
     except:
         pass
-    if Jexperience0 == '不限':
-        item['Jexperience'] = '0'
 
+
+    try:
+        JcomSize0 = item['JcomSize']
+        item['JcomSize'] = re.sub(r'[^\x00-\x7F]+','', JcomSize0)
+        if re.search(r'[^\x20-\x7e]', item['JhireCount']) != None:
+            item['JhireCount'] = '0'
+    except:
+        pass
+
+    try:
+        Jeducation0 = '无'
+        for x in ['初中', '高中', '大专', '本科', '硕士']:
+            if x in item['Jeducation']:
+                Jeducation0 = x
+        item['Jeducation'] = Jeducation0
+    except:
+        pass
 
     JcomType0 = ''
     # 公司性质
