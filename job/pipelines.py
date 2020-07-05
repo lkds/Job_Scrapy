@@ -10,11 +10,21 @@ from job.data_cleaning import clean,isTest
 class JobPipeline:
     def __init__(self):
         self.db=pymysql.connect(host='47.113.123.159',user='pa',passwd='258258cqu',db='job_info',charset='utf8',port=3306)
-        self.cur=self.db.cursor()
+        self.cur = self.db.cursor()
+        self.s = set()
     def process_item(self, item, spider):
         # print(item['title'])
+        
         key = item.keys()
         val = item.values()
+        if (tuple(val) in self.s):
+            return
+        else:
+            self.s.add(tuple(val))
+        
+        if (len(self.s) > 300):
+            self.s.clear()
+        
         dbName ='demo'
         if hasattr(spider, 'Jdb'):
             dbName = spider.Jdb

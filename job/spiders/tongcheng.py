@@ -2,10 +2,14 @@
 import scrapy
 import time
 import random
-import winsound
+# import winsound
 import os
 from job.items import JobItem
+import platform
+if platform.system() == 'Windows':
+    import winsound
 citys = []
+
 
 cityList = {
         "直辖市": {

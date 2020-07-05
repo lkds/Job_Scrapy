@@ -24,9 +24,9 @@ class jobSpider(scrapy.Spider):
                     salary = salary.split('￥',1)[1]
                     item['JmaxSalary'] = round(int(salary.split('-',1)[1])/1000,2)
                     item['JminSalary'] = round(int(salary.split('-',1)[0])/1000,2)
-                else:
-                    item['JmaxSalary'] = 0
-                    item['JminSalary'] = 0
+                # else:
+                #     item['JmaxSalary'] = 0
+                #     item['JminSalary'] = 0
                 # item['Jsalary'] = ''
                 # item['JpayTimes'] = ''
                 # item['Jtype'] = ''
@@ -51,9 +51,9 @@ class jobSpider(scrapy.Spider):
                     
                 elif(line.xpath('./div[2]/div[1]/div[2]/@class').extract()[0]=='job_welfare_tag'):
                     item['Jwelfare'] = ', '.join(line.xpath('./div[2]/div[1]/div[2]//span/text()').extract())
-
+                item['Jtype']= ''
                 yield item
-            
+
             next_url = response.xpath('//div[@class="search_pages"]//a[last()]/@href').extract()
             if next_url:
                 yield scrapy.Request(next_url[0],callback=self.parse)

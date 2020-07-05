@@ -102,7 +102,7 @@ class A51jobSpider(scrapy.Spider):
                 item['JcomSize'] = JcomSize[0].split('人')[0]
             # 详情链接
             item['Jsite'] = '前程无忧网'
-            item['Jsource'] = response.url
+            # item['Jsource'] = response.url
             # 交给管道文件处理数据
             # print("x")
             # print(item)

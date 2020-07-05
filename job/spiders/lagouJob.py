@@ -60,7 +60,7 @@ class lagouJobSpider(scrapy.Spider):
               "郑州", "珠海", "中山", "淄博", "株洲", "肇庆", "遵义", "湛江", "周口", "漳州", "驻马店", "镇江", "张家口", "长治", "枣庄", "资阳", "舟山", "张家界", "张掖", "昭通", "自贡", "中卫"]
 
     def __init__(self, *args, **kwargs):
-        self.js = execjs.compile(open("job\\resource\\lagou.js", "r").read())
+        self.js = execjs.compile(open(os.path.join("job","resource","lagou.js"), "r").read())
         self.Jdb = 'lagoujob'
         # self.Jdb = 'jobclean'
 
@@ -114,51 +114,57 @@ class lagouJobSpider(scrapy.Spider):
         """
             对response进行处理  reponse格式为Json
         """
-        print("===========parse==========")
-        jobInfo = JobItem()
-        result = json.loads(response.text)
+        try:
+            print("===========parse==========")
+            jobInfo = JobItem()
+            result = json.loads(response.text)
 
-        jobs = result['content']['positionResult']['result']
-        pageNo = result['content']['pageNo']
-        city = parse.unquote(response.url.split("?")[-1])
-        print("========" + city + "：" + "page :" + str(pageNo) + "======")
-        for job in jobs:
-            print("here")
-            jobInfo['Jname'] = job.get('positionName')
-            jobInfo['JminSalary'] = (int)(job.get(
-                'salary').split('-')[0].replace("k", ""))
-            jobInfo['JmaxSalary'] = (int)(job.get(
-                'salary').split('-')[-1].replace("k", ""))
-            paytimes = (int)(job.get('salaryMonth'))
-            if (paytimes == 0):
-                paytimes = 12
-            jobInfo['JpayTimes'] = paytimes
-            jobInfo['Jarea'] = job.get('city')
-            jobInfo['Jtype'] = job.get('industryField')
-           # jobInfo['Jrequirements'] = job['financeStage']
-            jobInfo['Jcompany'] = job.get('companyFullName')
-            jobInfo['Jtag'] = "/".join(job.get('industryLables'))
-            #
-            jobInfo['Jwelfare'] = job.get('positionAdvantage')
-            jobInfo['Jeducation'] = job.get('education')
-            # todo finished
-            jobInfo['Jexperience'] = self.modifyJexperience(
-                job.get('workYear'))
+            jobs = result['content']['positionResult']['result']
+            pageNo = result['content']['pageNo']
+            city = parse.unquote(response.url.split("?")[-1])
+            print("========" + city + "：" + "page :" + str(pageNo) + "======")
+            for job in jobs:
+            
+                jobInfo['Jname'] = job.get('positionName')
+                try:
+                    
+                    salary = modifySalary(job.get('salary'))
+                    if(salary):
+                        jobInfo['JminSalary'] = (int)(salary[0])
+                        jobInfo['JmaxSalary'] = (int)(salary[-1])
+                except:
+                    pass
+                paytimes = (int)(job.get('salaryMonth'))
+                if (paytimes == 0):
+                    paytimes = 12
+                jobInfo['JpayTimes'] = paytimes
+                jobInfo['Jarea'] = job.get('city')
+                jobInfo['Jtype'] = job.get('industryField')
+            # jobInfo['Jrequirements'] = job['financeStage']
+                jobInfo['Jcompany'] = job.get('companyFullName')
+                jobInfo['Jtag'] = "/".join(job.get('industryLables'))
+                #
+                jobInfo['Jwelfare'] = job.get('positionAdvantage')
+                jobInfo['Jeducation'] = job.get('education')
+                # todo finished
+                jobInfo['Jexperience'] = self.modifyJexperience(
+                    job.get('workYear'))
 
-            jobInfo['JcomFinanceStage'] = self.modifycomFinanceStage(job.get(
-                'financeStage'))
-            if(job.get('latitude') != None and job.get('longitude') != None):
-                jobInfo['Jlocation'] = "(" + job.get('latitude') + \
-                    "," + job.get('longitude') + ")"
-            jobInfo['JisSchoolJob'] = job.get('financeStage')
-            jobInfo['JcomSize'] = self.modifyComSize(job.get('companySize'))
-            jobInfo['JcreatedTime'] = job.get('createTime')
-            jobInfo['JisSchoolJob'] = job.get('isSchoolJob')
-            jobInfo['Jsource'] = response.url
-            jobInfo['Jsite'] = "拉勾"
-
-            yield jobInfo
-
+                jobInfo['JcomFinanceStage'] = self.modifycomFinanceStage(job.get(
+                    'financeStage'))
+                if(job.get('latitude') != None and job.get('longitude') != None):
+                    jobInfo['Jlocation'] = "(" + job.get('latitude') + \
+                        "," + job.get('longitude') + ")"
+                jobInfo['JisSchoolJob'] = job.get('financeStage')
+                jobInfo['JcomSize'] = self.modifyComSize(job.get('companySize'))
+                jobInfo['JcreatedTime'] = job.get('createTime')
+                jobInfo['JisSchoolJob'] = job.get('isSchoolJob')
+                jobInfo['Jsource'] = response.url
+                jobInfo['Jsite'] = "拉勾"
+                # print(jobInfo)
+                yield jobInfo
+        except:
+            pass
         # 同一城市的翻页
         if (pageNo != 0):
             cookiesDict = self.run()
@@ -174,6 +180,8 @@ class lagouJobSpider(scrapy.Spider):
             return re.findall(r'\d+\-\d+', comSize)[0]
         else:
             return
+    def modifySalary(self, salary):
+        return re.findall(r'\d+',salary)
 
     def modifycomFinanceStage(self, comSize):
         if (comSize.find("轮") != -1):
@@ -203,7 +211,7 @@ class lagouJobSpider(scrapy.Spider):
         print("=============next_url===============")
 
         for city in self.cities:
-            time.sleep(2)
+            #time.sleep(2)
             self.url = "https://www.lagou.com/jobs/positionAjax.json?city={}".format(
                 city)
             cookiesDict = self.run()
