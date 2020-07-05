@@ -1,4 +1,4 @@
-isTest = False
+isTest = True
 area_data = {
             '北京': ['北京','朝阳区', '海淀区', '通州区', '房山区', '丰台区', '昌平区', '大兴区', '顺义区', '西城区', '延庆县', '石景山区', '宣武区', '怀柔区', '崇文区', '密云县',
                 '东城区', '门头沟区', '平谷区'],
@@ -42,6 +42,158 @@ area_data = {
 
 import re
 
+def modifyType(item, allTag):
+    if 'avascript' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_前端_Javascript'
+    elif 'ava' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_开发_Java'
+        
+    elif 'ython' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_开发_Python'
+
+    elif '++' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_开发_C++'
+
+    elif 'C#' in allTag or 'c#' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_开发_C#'
+    
+    elif '.net' in allTag or '.NET' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_开发_.NET'
+    
+    elif 'SQL' in allTag or 'sql' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_开发_SQL'
+    elif 'Swift' in allTag or 'swift' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_开发_Swift'
+    elif 'Ruby' in allTag or 'ruby' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_开发_Ruby'
+    elif 'Rust' in allTag or 'rust' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_开发_Rust'
+    elif 'Go' in allTag or 'go' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_开发_Go'
+    elif 'PHP' in allTag or 'Php' in allTag or 'php' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_开发_PHP'
+    elif 'iOS' in allTag or 'ios' in allTag or 'IOS' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_移动开发_iOS'
+
+    elif 'ndroid' in allTag or '安卓' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_移动开发_Android'
+    elif '大数据' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_开发_大数据'
+
+    elif '推荐' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_开发_推荐算法'
+
+    elif '前端' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_前端'
+
+    elif 'HTML5' in allTag or 'html5' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_前端_HTML5'
+
+    elif 'Web' in allTag or 'web' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_前端_Web'
+
+    elif '测试' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_测试'
+
+    elif '运维' in allTag or '系统工程师' in allTag or '网络工程师' in allTag or 'DBA' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_运维'
+
+    elif '技术经理' in allTag or '架构师' in allTag or '技术总监' in allTag or 'CTO' in allTag or '安全专家' in allTag or '项目总监' in allTag:
+        item['Jtype'] = 'IT·互联网_技术_高端职位'
+
+    elif 'AI产品' in allTag or '物流产品' in allTag or '网页产品' in allTag or '移动产品' in allTag or '数据产品' in allTag or '电商产品' in allTag or '游戏策划' in allTag or '游戏制作人' in allTag:
+        item['Jtype'] = 'IT·互联网_产品'
+    
+    elif 'UI设计' in allTag or '视觉设计' in allTag or '网页设计' in allTag or 'APP设计' in allTag or '平面设计' in allTag or '动作设计' in allTag or '美术设计' in allTag or '广告设计' in allTag or '多媒体设计' in allTag or '广告设计' in allTag or '游戏角色' in allTag or '游戏动作' in allTag or '游戏设计' in allTag:
+        item['Jtype'] = 'IT·互联网_设计'
+
+    elif '运营' in allTag or '主编' in allTag or '副主编' in allTag or '编辑' in allTag or '文案策划' in allTag or '记者' in allTag or '网络推广' in allTag or '淘宝客服' in allTag or '客服经理' in allTag or '客服总监' in allTag or 'COO' in allTag:
+        item['Jtype'] = 'IT·互联网_运营'
+    
+    elif '互联网' in allTag or '算法' in allTag or '电商' in allTag or '程序员' in allTag or '软件开发' in allTag or '网络优化' in allTag:
+        item['Jtype'] = 'IT·互联网'
+
+    # 房地产
+    elif '房地产' in allTag or '建筑' in allTag or '建筑工程师' in allTag or '机电工程师' in allTag or '土建工程师' in allTag or '水电工程师' in allTag or '质检工程师' in allTag or '材料总管' in allTag or '结构设计师' in allTag or '钢结构设计' in allTag or '电气设计' in allTag or '暖通设计' in allTag or '给排水设计' in allTag or '室内设计' in allTag or 'CAD' in allTag or '物业' in allTag or '装潢设计' in allTag  or '政设计' in allTag or '房产' in allTag or '房' in allTag or '售楼' in allTag or '造价' in allTag:
+        item['Jtype'] = '房地产'
+
+    # 金融
+    elif '银行' in allTag or '柜员' in allTag or '理财经理' in allTag or '零售客户经理' in allTag or '支行' in allTag or '行长' in allTag or '风险经理' in allTag or '投资银行' in allTag or 'Teller' in allTag:
+        item['Jtype'] = '金融_银行'
+
+    elif '保险' in allTag or '资产' in allTag or '理财' in allTag or '储备主管' in allTag :
+        item['Jtype'] = '金融_保险'
+
+    elif '证券' in allTag or '资产' in allTag or '基金' in allTag or '行业研究员' in allTag :
+        item['Jtype'] = '金融_证券/基金'
+
+    elif '担保业务' in allTag or '拍卖师' in allTag or '珠宝鉴定' in allTag or '收藏物鉴定' in allTag or 'CFO' in allTag or '财务总监' in allTag or '税务经理' in allTag :
+        item['Jtype'] = '金融_其他金融服务'
+
+    elif '金融' in allTag or '出纳' in allTag or '会计' in allTag or '审计' in allTag:
+        item['Jtype'] = '金融'
+
+
+    # 汽车·制造
+    elif '汽车制造' in allTag or '底盘' in allTag or '汽车零部件' in allTag or '操作工' in allTag:
+        item['Jtype'] = '汽车_汽车制造'
+
+    elif '汽车销售' in allTag:
+        item['Jtype'] = '汽车_营销及销售'
+    
+    elif '汽车' in allTag:
+        item['Jtype'] = '汽车'
+    #医疗
+
+    elif '医生' in allTag or '护士' in allTag or '药剂师' in allTag:
+        item['Jtype'] = '医疗_人员'
+
+
+    elif '医疗' in allTag or '药品' in allTag or '生物' in allTag:
+        item['Jtype'] = '医疗_药品/生物制剂'
+
+    
+    #化工
+    elif '新材料' in allTag or '新能源' in allTag:
+        item['Jtype'] = '化工_新材料/环保技术'
+    
+    elif '机械' in allTag or '钳工' in allTag or '焊工' in allTag:
+        item['Jtype'] = '化工_机械'
+
+    elif '石油' in allTag or '天然气' in allTag:
+        item['Jtype'] = '化工_石化'
+    
+    elif '半导体' in allTag or '集成电路' in allTag:
+        item['Jtype'] = '化工_电子'
+        
+    #文娱
+    elif '主播' in allTag or '艺人' in allTag or '歌手' in allTag or '文娱' in allTag:
+        item['Jtype'] = '文娱'
+        
+    #交通运输
+    elif '司机' in allTag or '乘务员' in allTag or '机长' in allTag or '空姐' in allTag or '地勤' in allTag or '地铁' in allTag or '火车' in allTag:
+        item['Jtype'] = '交通运输'
+        
+    #服务业
+    elif '送餐员' in allTag or '厨师' in allTag or '洗盘' in allTag or '服务员' in allTag or '洗碗' in allTag or '厨' in allTag or '食品' in allTag:
+        item['Jtype'] = '服务业_食品'
+
+    elif '顺丰' in allTag or '快递员' in allTag or '菜鸟裹裹' in allTag or '分拣员' in allTag or '物流' in allTag:
+        item['Jtype'] = '服务业_物流'
+        
+    elif '旅游' in allTag:
+        item['Jtype'] = '服务业_旅游'
+
+    elif '美甲师' in allTag or '清洁工' in allTag or '扫地' in allTag or '美容师' in allTag or '保安' in allTag or '电话客服' in allTag or '足疗师' in allTag or '教练' in allTag or '网管' in allTag  or '管家' in allTag or '店员' in allTag or '店长' in allTag:
+        item['Jtype'] = '服务业'
+
+    #教育业
+    elif '老师' in allTag or '教师' in allTag or '教授' in allTag or '招生' in allTag or '课程' in allTag or '教育' in allTag:
+        item['Jtype'] = '教育业'
+    
+    #新闻
+    elif '新闻' in allTag or '出版' in allTag:
+        item['Jtype'] = '新闻_出版' 
 
 def clean(item):
     #TODO
@@ -60,152 +212,22 @@ def clean(item):
         Jtag0 = item['Jtag']
     except:
         pass
+    allTag = Jname0
+    modifyType(item,allTag)
     # IT·互联网
-    if 'Javascript' in (Jname0+','+Jtype0+','+Jtag0) or 'javascript' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_移动开发及前端_Javascript'
-
-    elif 'Java' in (Jname0+','+Jtype0+','+Jtag0) or 'java' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_开发_java'
+    try:
+        if item['Jtype'] == Jtype0:
+            allTag = Jname0 + Jtype0
+            modifyType(item,allTag)
         
-    elif 'Python' in (Jname0+','+Jtype0+','+Jtag0) or 'python' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_开发_python'
-
-    elif 'C++' in (Jname0+','+Jtype0+','+Jtag0) or 'c++' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_开发_C++'
-
-    elif 'C#' in (Jname0+','+Jtype0+','+Jtag0) or 'c#' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_开发_C#'
-
-    elif 'PHP' in (Jname0+','+Jtype0+','+Jtag0) or 'Php' in (Jname0+','+Jtype0+','+Jtag0) or 'php' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_开发_PHP'
-
-    elif '大数据' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_开发_大数据'
-
-    elif '推荐' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_开发_推荐算法'
-
-    elif '前端开发' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_移动开发及前端_前端开发'
-
-    elif 'iOS' in (Jname0+','+Jtype0+','+Jtag0) or 'ios' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_移动开发及前端_iOS'
-
-    elif 'Android' in (Jname0+','+Jtype0+','+Jtag0) or 'android' in (Jname0+','+Jtype0+','+Jtag0) or '安卓' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_移动开发及前端_Android'
-
-    elif 'HTML5' in (Jname0+','+Jtype0+','+Jtag0) or 'html5' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_移动开发及前端_HTML5'
-
-    elif 'Web前端' in (Jname0+','+Jtype0+','+Jtag0) or 'web前端' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_移动开发及前端_Web前端'
-
-    elif '测试' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_测试'
-
-    elif '运维' in (Jname0+','+Jtype0+','+Jtag0) or '系统工程师' in (Jname0+','+Jtype0+','+Jtag0) or '网络工程师' in (Jname0+','+Jtype0+','+Jtag0) or 'DBA' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_运维'
-
-    elif '技术经理' in (Jname0+','+Jtype0+','+Jtag0) or '架构师' in (Jname0+','+Jtype0+','+Jtag0) or '技术总监' in (Jname0+','+Jtype0+','+Jtag0) or 'CTO' in (Jname0+','+Jtype0+','+Jtag0) or '安全专家' in (Jname0+','+Jtype0+','+Jtag0) or '项目总监' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_高端职位'
-
-    elif 'AI产品' in (Jname0+','+Jtype0+','+Jtag0) or '物流产品' in (Jname0+','+Jtype0+','+Jtag0) or '网页产品' in (Jname0+','+Jtype0+','+Jtag0) or '移动产品' in (Jname0+','+Jtype0+','+Jtag0) or '数据产品' in (Jname0+','+Jtype0+','+Jtag0) or '电商产品' in (Jname0+','+Jtype0+','+Jtag0) or '游戏策划' in (Jname0+','+Jtype0+','+Jtag0) or '游戏制作人' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_产品'
-    
-    elif 'UI设计' in (Jname0+','+Jtype0+','+Jtag0) or '视觉设计' in (Jname0+','+Jtype0+','+Jtag0) or '网页设计' in (Jname0+','+Jtype0+','+Jtag0) or 'APP设计' in (Jname0+','+Jtype0+','+Jtag0) or '平面设计' in (Jname0+','+Jtype0+','+Jtag0) or '3D动作设计' in (Jname0+','+Jtype0+','+Jtag0) or '美术设计' in (Jname0+','+Jtype0+','+Jtag0) or '广告设计' in (Jname0+','+Jtype0+','+Jtag0) or '多媒体设计' in (Jname0+','+Jtype0+','+Jtag0) or '广告设计' in (Jname0+','+Jtype0+','+Jtag0) or '游戏角色' in (Jname0+','+Jtype0+','+Jtag0) or '游戏动作' in (Jname0+','+Jtype0+','+Jtag0) or '游戏设计' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_设计'
-
-    elif '运营' in (Jname0+','+Jtype0+','+Jtag0) or '主编' in (Jname0+','+Jtype0+','+Jtag0) or '副主编' in (Jname0+','+Jtype0+','+Jtag0) or '编辑' in (Jname0+','+Jtype0+','+Jtag0) or '文案策划' in (Jname0+','+Jtype0+','+Jtag0) or '记者' in (Jname0+','+Jtype0+','+Jtag0) or '网络推广' in (Jname0+','+Jtype0+','+Jtag0) or '淘宝客服' in (Jname0+','+Jtype0+','+Jtag0) or '客服经理' in (Jname0+','+Jtype0+','+Jtag0) or '客服总监' in (Jname0+','+Jtype0+','+Jtag0) or 'COO' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网_技术_运营'
-    
-    elif '互联网' in (Jname0+','+Jtype0+','+Jtag0) or '算法' in (Jname0+','+Jtype0+','+Jtag0) or '电商' in (Jname0+','+Jtype0+','+Jtag0) or 'NET' in (Jname0+','+Jtype0+','+Jtag0) or '程序员' in (Jname0+','+Jtype0+','+Jtag0) or '软件开发' in (Jname0+','+Jtype0+','+Jtag0) or '网络优化' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = 'IT·互联网'
-
-    # 房地产
-    elif '房地产' in (Jname0+','+Jtype0+','+Jtag0) or '建筑' in (Jname0+','+Jtype0+','+Jtag0) or '建筑工程师' in (Jname0+','+Jtype0+','+Jtag0) or '机电工程师' in (Jname0+','+Jtype0+','+Jtag0) or '土建工程师' in (Jname0+','+Jtype0+','+Jtag0) or '水电工程师' in (Jname0+','+Jtype0+','+Jtag0) or '质检工程师' in (Jname0+','+Jtype0+','+Jtag0) or '材料总管' in (Jname0+','+Jtype0+','+Jtag0) or '结构设计师' in (Jname0+','+Jtype0+','+Jtag0) or '钢结构设计' in (Jname0+','+Jtype0+','+Jtag0) or '电气设计' in (Jname0+','+Jtype0+','+Jtag0) or '暖通设计' in (Jname0+','+Jtype0+','+Jtag0) or '给排水设计' in (Jname0+','+Jtype0+','+Jtag0) or '室内设计' in (Jname0+','+Jtype0+','+Jtag0) or 'CAD' in (Jname0+','+Jtype0+','+Jtag0) or '物业' in (Jname0+','+Jtype0+','+Jtag0) or '装潢设计' in (Jname0+','+Jtype0+','+Jtag0)  or '政设计' in (Jname0+','+Jtype0+','+Jtag0) or '房产' in (Jname0+','+Jtype0+','+Jtag0) or '房' in (Jname0+','+Jtype0+','+Jtag0) or '售楼' in (Jname0+','+Jtype0+','+Jtag0) or '造价' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '房地产'
-
-    # 金融
-    elif '银行' in (Jname0+','+Jtype0+','+Jtag0) or '柜员' in (Jname0+','+Jtype0+','+Jtag0) or '理财经理' in (Jname0+','+Jtype0+','+Jtag0) or '零售客户经理' in (Jname0+','+Jtype0+','+Jtag0) or '支行' in (Jname0+','+Jtype0+','+Jtag0) or '行长' in (Jname0+','+Jtype0+','+Jtag0) or '风险经理' in (Jname0+','+Jtype0+','+Jtag0) or '投资银行' in (Jname0+','+Jtype0+','+Jtag0) or 'Teller' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '金融_银行'
-
-    elif '保险' in (Jname0+','+Jtype0+','+Jtag0) or '资产' in (Jname0+','+Jtype0+','+Jtag0) or '理财' in (Jname0+','+Jtype0+','+Jtag0) or '储备主管' in (Jname0+','+Jtype0+','+Jtag0) :
-        item['Jtype'] = '金融_保险'
-
-    elif '证券' in (Jname0+','+Jtype0+','+Jtag0) or '资产' in (Jname0+','+Jtype0+','+Jtag0) or '基金' in (Jname0+','+Jtype0+','+Jtag0) or '行业研究员' in (Jname0+','+Jtype0+','+Jtag0) :
-        item['Jtype'] = '金融_证券/基金'
-
-    elif '担保业务' in (Jname0+','+Jtype0+','+Jtag0) or '拍卖师' in (Jname0+','+Jtype0+','+Jtag0) or '珠宝鉴定' in (Jname0+','+Jtype0+','+Jtag0) or '收藏物鉴定' in (Jname0+','+Jtype0+','+Jtag0) or 'CFO' in (Jname0+','+Jtype0+','+Jtag0) or '财务总监' in (Jname0+','+Jtype0+','+Jtag0) or '税务经理' in (Jname0+','+Jtype0+','+Jtag0) :
-        item['Jtype'] = '金融_其他金融服务'
-
-    elif '金融' in (Jname0+','+Jtype0+','+Jtag0) or '出纳' in (Jname0+','+Jtype0+','+Jtag0) or '会计' in (Jname0+','+Jtype0+','+Jtag0) or '审计' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '金融'
-
-
-    # 汽车·制造
-    elif '汽车制造' in (Jname0+','+Jtype0+','+Jtag0) or '底盘' in (Jname0+','+Jtype0+','+Jtag0) or '汽车零部件' in (Jname0+','+Jtype0+','+Jtag0) or '操作工' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '汽车_汽车制造'
-
-    elif '汽车销售' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '汽车_营销及销售'
-    
-    elif '汽车' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '汽车'
-    #医疗
-
-    elif '医生' in (Jname0+','+Jtype0+','+Jtag0) or '护士' in (Jname0+','+Jtype0+','+Jtag0) or '药剂师' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '医疗_人员'
-
-
-    elif '医疗' in (Jname0+','+Jtype0+','+Jtag0) or '药品' in (Jname0+','+Jtype0+','+Jtag0) or '生物' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '医疗_药品/生物制剂'
-
-    
-    #化工
-    elif '新材料' in (Jname0+','+Jtype0+','+Jtag0) or '新能源' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '化工_新材料/环保技术'
-    
-    elif '机械' in (Jname0+','+Jtype0+','+Jtag0) or '钳工' in (Jname0+','+Jtype0+','+Jtag0) or '焊工' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '化工_机械'
-
-    elif '石油' in (Jname0+','+Jtype0+','+Jtag0) or '天然气' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '化工_石化'
-    
-    elif '半导体' in (Jname0+','+Jtype0+','+Jtag0) or '集成电路' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '化工_电子'
+        if item['Jtype'] == Jtype0:
+            allTag = Jname0 + Jtype0 + Jtag0
+            modifyType(item,allTag)
         
-    #文娱
-    elif '主播' in (Jname0+','+Jtype0+','+Jtag0) or '艺人' in (Jname0+','+Jtype0+','+Jtag0) or '歌手' in (Jname0+','+Jtype0+','+Jtag0) or '文娱' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '文娱'
-        
-    #交通运输
-    elif '司机' in (Jname0+','+Jtype0+','+Jtag0) or '乘务员' in (Jname0+','+Jtype0+','+Jtag0) or '机长' in (Jname0+','+Jtype0+','+Jtag0) or '空姐' in (Jname0+','+Jtype0+','+Jtag0) or '地勤' in (Jname0+','+Jtype0+','+Jtag0) or '地铁' in (Jname0+','+Jtype0+','+Jtag0) or '火车' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '交通运输'
-        
-    #服务业
-    elif '送餐员' in (Jname0+','+Jtype0+','+Jtag0) or '厨师' in (Jname0+','+Jtype0+','+Jtag0) or '洗盘' in (Jname0+','+Jtype0+','+Jtag0) or '服务员' in (Jname0+','+Jtype0+','+Jtag0) or '洗碗' in (Jname0+','+Jtype0+','+Jtag0) or '厨' in (Jname0+','+Jtype0+','+Jtag0) or '食品' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '服务业_食品'
-
-    elif '顺丰' in (Jname0+','+Jtype0+','+Jtag0) or '快递员' in (Jname0+','+Jtype0+','+Jtag0) or '菜鸟裹裹' in (Jname0+','+Jtype0+','+Jtag0) or '分拣员' in (Jname0+','+Jtype0+','+Jtag0) or '物流' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '服务业_物流'
-        
-    elif '旅游' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '服务业_旅游'
-
-    elif '美甲师' in (Jname0+','+Jtype0+','+Jtag0) or '清洁工' in (Jname0+','+Jtype0+','+Jtag0) or '扫地' in (Jname0+','+Jtype0+','+Jtag0) or '美容师' in (Jname0+','+Jtype0+','+Jtag0) or '保安' in (Jname0+','+Jtype0+','+Jtag0) or '电话客服' in (Jname0+','+Jtype0+','+Jtag0) or '足疗师' in (Jname0+','+Jtype0+','+Jtag0) or '教练' in (Jname0+','+Jtype0+','+Jtag0) or '网管' in (Jname0+','+Jtype0+','+Jtag0)  or '管家' in (Jname0+','+Jtype0+','+Jtag0) or '店员' in (Jname0+','+Jtype0+','+Jtag0) or '店长' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '服务业'
-
-    #教育业
-    elif '老师' in (Jname0+','+Jtype0+','+Jtag0) or '教师' in (Jname0+','+Jtype0+','+Jtag0) or '教授' in (Jname0+','+Jtype0+','+Jtag0) or '招生' in (Jname0+','+Jtype0+','+Jtag0) or '课程' in (Jname0+','+Jtype0+','+Jtag0) or '教育' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '教育业'
-    
-    #新闻
-    elif '新闻' in (Jname0+','+Jtype0+','+Jtag0) or '出版' in (Jname0+','+Jtype0+','+Jtag0):
-        item['Jtype'] = '新闻_出版' 
-
-    else:
-        item['Jtype'] = '其他'
-
+        if item['Jtype'] == Jtype0:
+            item['Jtype'] = '其它'
+    except:
+        pass
 
     item['Jname'] = Jname0.split('(')[0].split('-')[0]
 
