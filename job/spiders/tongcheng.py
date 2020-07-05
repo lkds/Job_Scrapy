@@ -261,7 +261,7 @@ class TongchengSpider(scrapy.Spider):
     positionUrl = 'http://sh.58.com/job/'
 
     currentcity = 0
-    currentpagetotal = 0
+    currentpagetotal = 30
     curPage = 0
 
     headers = {
@@ -286,8 +286,6 @@ class TongchengSpider(scrapy.Spider):
             os.system("pause")
             return self.this_request()
         print(response.css('i.total_page::text'))
-        self.currentpagetotal = int(response.css('i.total_page::text').extract()[0])
-        print(self.currentpagetotal)
 
         job_list = response.css('li.job_item')
         if (len(job_list) > 0):
