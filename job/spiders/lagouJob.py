@@ -128,7 +128,7 @@ class lagouJobSpider(scrapy.Spider):
                 jobInfo['Jname'] = job.get('positionName')
                 try:
                     
-                    salary = modifySalary(job.get('salary'))
+                    salary = self.modifySalary(job.get('salary'))
                     if(salary):
                         jobInfo['JminSalary'] = (int)(salary[0])
                         jobInfo['JmaxSalary'] = (int)(salary[-1])
@@ -159,7 +159,7 @@ class lagouJobSpider(scrapy.Spider):
                 jobInfo['JcomSize'] = self.modifyComSize(job.get('companySize'))
                 jobInfo['JcreatedTime'] = job.get('createTime')
                 jobInfo['JisSchoolJob'] = job.get('isSchoolJob')
-                jobInfo['Jsource'] = response.url
+                # jobInfo['Jsource'] = response.url
                 jobInfo['Jsite'] = "拉勾"
                 # print(jobInfo)
                 yield jobInfo
